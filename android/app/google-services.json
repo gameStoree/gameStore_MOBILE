@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "21927219957",
+    "project_id": "storegames-a2d88",
+    "storage_bucket": "storegames-a2d88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21927219957:android:110523c65585ad52d56bbc",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASq6jl3c1OuYvKmv1yJ5IJPvTZlzG6y98"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
