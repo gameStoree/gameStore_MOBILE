@@ -109,7 +109,7 @@ class _loginState extends State<login> {
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'GamerStore.Id',
+                      'sdgfhjhk.Id',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 19,
