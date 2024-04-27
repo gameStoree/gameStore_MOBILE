@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project/Ketentuan%20TopUp/Ketentuan_topup.dart';
 import 'package:project/Model_topUp/Diamond_model.dart';
 // import 'package:project/model/model_payment.dart';
+import 'package:flutter/services.dart';
 import 'package:project/widgets/home_buttom.dart';
 import 'package:http/http.dart' as http;
 
@@ -45,7 +46,7 @@ class _FFScreenState extends State<FFScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xffc7f9cc),
       appBar: AppBar(
         title: Text(
           'Top Up Free Fire',
@@ -369,53 +370,53 @@ class _FFScreenState extends State<FFScreen> {
                 ),
                 SizedBox(height: 20),
                
-              Container(
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Color(0xff22577A),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Masukkan Nomor HP Customer',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+              Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+            Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
+                  padding: EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: Color(0xff22577A),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.white),
                   ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                  controller: noHp,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'Nomor HP',
-                    hintStyle: TextStyle(color: Colors.white54),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: const Color.fromARGB(255, 255, 255, 255)), // Warna border saat tidak di dalam fokus
-                      borderRadius: BorderRadius.circular(5),
+                  child: Padding(
+                   padding: const EdgeInsets.all(2.0),
+                  child: TextFormField(
+                    controller: noHp,
+                    style: TextStyle(color: Colors.white,
+                    fontSize: 18,
+                    ),    
+                   decoration: InputDecoration(
+                      hintText: 'Masukan Nomer Hp Anda',
+                      hintStyle: TextStyle(color: Colors.white54),
+                       border: InputBorder.none,
+                      // border: OutlineInputBorder(
+                      //   borderSide: BorderSide(color: Colors.white),
+                      //   borderRadius: BorderRadius.circular(5),
+                      // ),
+                      contentPadding: EdgeInsets.only(left: 10),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: const Color.fromARGB(255, 249, 255, 249)), // Warna border saat di dalam fokus
-                      borderRadius: BorderRadius.circular(5),
-                    ),
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Harap masukkan Hp Anda';
+                      }
+                      return null;
+                    },
                   ),
-                  keyboardType: TextInputType.phone,
-                  maxLines: 1,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Nomer hp harus di isi';
-                    }
-                    return null;
-                  },
                 ),
-
-                ],
-              ),
+                ),
+              ],
             ),
+              ),
+              ],
+              ),
                 SizedBox(height: 20,),
                 Container(
               margin: EdgeInsets.symmetric(horizontal: 15),
@@ -457,6 +458,7 @@ class _FFScreenState extends State<FFScreen> {
         },
       ),
       bottomNavigationBar: HomeBottomBar(),
+      // bottomNavigationBar: HomeBottomBar(),
     );
   }
 }

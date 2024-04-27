@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+// import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'package:project/Login_2/Login_provider.dart';
 import 'package:project/Login_2/lupaPw.dart';
@@ -109,7 +109,7 @@ class _loginState extends State<login> {
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'sdgfhjhk.Id',
+                      'GameStore.Id',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 19,
