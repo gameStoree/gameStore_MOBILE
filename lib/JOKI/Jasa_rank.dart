@@ -186,6 +186,7 @@ class _JasaRankState extends State<JasaRank> {
                           Text(
                             'Jaminan Layanan 24 Jam',
                             style: TextStyle(
+                              fontWeight: FontWeight.bold,
                               fontSize: 14,
                               color: Colors.white,
                             ),
@@ -205,6 +206,7 @@ class _JasaRankState extends State<JasaRank> {
                             'Pembayaran Aman & Terpercaya',
                             style: TextStyle(
                               fontSize: 14,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
@@ -223,6 +225,7 @@ class _JasaRankState extends State<JasaRank> {
                             'Proses Cepat & Otomatis',
                             style: TextStyle(
                               fontSize: 14,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
@@ -232,7 +235,7 @@ class _JasaRankState extends State<JasaRank> {
                   ),
                 ),
 
-
+  
 
                 GestureDetector(
                   onTap: () {

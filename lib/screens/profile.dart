@@ -235,7 +235,7 @@ Future<void> takePhoto() async {
                   Icon(
                     Icons.arrow_right_alt,
                     color: Colors.white,
-                    size: 40,
+                    size: 38,
                   ),
                 ],
               ),

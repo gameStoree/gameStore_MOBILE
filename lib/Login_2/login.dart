@@ -56,7 +56,6 @@ class _loginState extends State<login> {
     SpUtil.putString('alamat', alamat);
     // SpUtil.putString('foto_user', foto);
     Get.offAllNamed('/home');
-        
         Get.snackbar(
           "Success", "Login berhasil",
           backgroundColor: Colors.green,
