@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/Model_topUp/searchjokipemesanan.dart';
 import 'package:intl/intl.dart';
+import 'package:project/screens/home.dart';
 
 class OrderDetailWidget extends StatefulWidget {
   final Pemesanan order;
@@ -158,91 +159,115 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                   ),
                 ),
                 SizedBox(height: 15,),
-             Container(
-                 width: 365,
-                  margin: EdgeInsets.symmetric(vertical: 10.0),
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 0.7),
-                    borderRadius: BorderRadius.circular(10.0),
+            Container(
+              width: 365,
+              margin: EdgeInsets.symmetric(vertical: 10.0),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(255, 255, 255, 0.7),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Informasi Akun',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
-                  padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        'Informasi Akun',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                  SizedBox(height: 8.0),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Login Via',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.loginVia ?? 'Tidak ada data'}"),
+                  SizedBox(height: 8.0),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'User ID & NickName',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.nicknameMl ?? 'Tidak ada data'}"),
+                  SizedBox(height: 8.0),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Email',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.emailNoHpMontonID ?? 'Tidak ada data'}"),
+                  SizedBox(height: 8.0),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Password',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.password ?? 'Tidak ada data'}"),
+                  SizedBox(height: 8.0),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Request Hero',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.requestHero ?? 'Tidak ada data'}"),
+                  SizedBox(height: 8.0),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Catatan Untuk Pejoki',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.catatanPenjoki ?? 'Tidak ada data'}"),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.requestHero ?? 'Tidak ada data'}"),
+                  SizedBox(height: 8.0),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Nama Worker',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  SizedBox(height: 2.0),
+                  Text("${widget.order.namaWorker ?? 'Tidak ada data'}"),
+                  SizedBox(height: 16.0),
+                  SizedBox(
+                    width: double.infinity,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12.0),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Download Invoice',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        ),
                       ),
-                      SizedBox(height: 8.0),
-                        Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                       Text(
-                        'Login Via',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.loginVia ?? 'Tidak ada data'}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                       Text(
-                        'User ID & NickName',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.nicknameMl ?? 'Tidak ada data'}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                       Text(
-                        'Email',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.emailNoHpMontonID ?? 'Tidak ada data'}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                       Text(
-                        'Password',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.password ?? 'Tidak ada data'}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                       Text(
-                        'Request Hero',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.requestHero ?? 'Tidak ada data'}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                       Text(
-                        'Catatan Untuk Pejoki',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.catatanPenjoki ?? 'Tidak ada data'}"),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.requestHero ?? 'Tidak ada data'}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                       Text(
-                        'Nama Worker',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.namaWorker ?? 'Tidak ada data'}"),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-
-                  ],
-                ),
-              )
 
 
               ],
