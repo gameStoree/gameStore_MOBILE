@@ -1,11 +1,12 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:project/Ketentuan%20TopUp/ketentuan%20_joki.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
+import 'package:sp_util/sp_util.dart';
 
 class JasaRank extends StatefulWidget {
   const JasaRank({Key? key}) : super(key: key);
@@ -17,7 +18,6 @@ class JasaRank extends StatefulWidget {
 class _JasaRankState extends State<JasaRank> {
   late String valueChoose;
   List<String> listItem = ["Pilih Via Login ", "Moonton(Rekomendasi)", "Vk", "Tiktok", "Facrbook"];
-
   TextEditingController idGame = TextEditingController();
   TextEditingController servergame = TextEditingController();
   TextEditingController email_moonton = TextEditingController();
@@ -26,28 +26,76 @@ class _JasaRankState extends State<JasaRank> {
   TextEditingController catatan = TextEditingController();
   TextEditingController Nohp = TextEditingController();
 
-  String? selectedMethod;
 
-  late Future<List<Datajoki>> _jokiFuture;
-  int _selectedIndex = -1;
-
-  Future<List<Datajoki>> fetchJokirank(String datajoki) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/jokirank'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body)['data'];
-      return data.map((json) => Datajoki.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load Data joki');
-    }
+  Future<void> sendOrderData() async {
+  if (_selectedPaketId == 0) {
+    print('Pilih paket joki terlebih dahulu');
+    return;
   }
+  final url = Uri.parse('http://10.0.2.2:8000/api/transactions');
+  int userId = SpUtil.getInt('id_user') ?? 0;
+  
+  final Map<String, dynamic> orderData = {
+  // 'id': transactionId,
+  'id_paket': _selectedPaketId.toString(),
+  'login_via': valueChoose.toString(),
+  'nickname_ml': idGame.text.toString(),
+  'email_no_hp_montonID': email_moonton.text.toString(),
+  'password': password.text.toString(),
+  'request_hero': requestHero.text.toString(),
+  'catatan_penjoki': catatan.text.toString(),
+  'metode_pembayaran' : 'ipaymu',
+  'no_hp': Nohp.text.toString(),
+  'status': 'pending',
+  'id_user': userId.toString(),
+  // 'id_worker': 1,
+};
+  print('Order Data: $orderData');
+  try {
+    final response = await http.post(
+      url,
+      body: orderData,
+    );
+
+    if (response.statusCode == 201) {
+      print('Transaction stored successfully');
+    } else {
+      print('Failed to store transaction');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+}
+
+
+// int generateTransactionId() {
+//   int timestamp = DateTime.now().millisecondsSinceEpoch;
+//   int random = Random().nextInt(90) + 100;
+//   int transactionId = int.parse('76$timestamp$random');
+//   return transactionId;
+// }
+
+
+  
+  late Future<List<Datajoki>> _jokiFuture;
+  late int _selectedPaketId = 0;
+
+Future<List<Datajoki>> fetchJokirank(String datajoki) async {
+  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/jokirank?data=$datajoki'));
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(response.body)['data'];
+    return data.map((json) => Datajoki.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load Data joki');
+  }
+}
 
   @override
-  void initState() {
-    super.initState();
-    valueChoose = listItem[0];
-    _jokiFuture = fetchJokirank('Joki Rank');
-  }
+void initState() {
+  super.initState();
+  valueChoose = listItem[0];
+  _jokiFuture = fetchJokirank('Joki Rank');
+}
 
   @override
   Widget build(BuildContext context) {
@@ -234,9 +282,6 @@ class _JasaRankState extends State<JasaRank> {
                     ],
                   ),
                 ),
-
-  
-
                 GestureDetector(
                   onTap: () {
                     AwesomeDialog(
@@ -295,10 +340,6 @@ Terimakasih""",
                     ),
                   ),
                 ),
-
-                // Your existing widgets here...
-
-                // Container for "Lihat Cara Transaksi Disini"
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -332,10 +373,6 @@ Terimakasih""",
                     ),
                   ),
                 ),
-
-                // Your existing widgets here...
-
-                // Container for "Masukan Data Akun Kamu"
                 Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -576,9 +613,6 @@ Terimakasih""",
               ),
             ],
           ),
-                // Your existing widgets here...
-
-                // Container for "Joki Rank"
                 Container(
                   margin: EdgeInsets.only(bottom: 8, left: 20, right: 15),
                   child: Text(
@@ -589,59 +623,56 @@ Terimakasih""",
                     ),
                   ),
                 ),
-                ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: listJoki.length,
-                      itemBuilder: (context, index) {
-                        Datajoki listjokis = listJoki[index];
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: _selectedIndex == index ? Colors.blue : Color(0xff22577A),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Nama Paket : ${listjokis.nama_paket}', // Perhatikan penggunaan properti yang benar di sini
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  'Rank : ${listjokis.rank}',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  'Harga : ${listjokis.harga_joki.toString()}',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: listJoki.length,
+                  itemBuilder: (context, index) {
+                    Datajoki listjokis = listJoki[index];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedPaketId = listjokis.id_paket;
+                        });
+                      },
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: _selectedPaketId == listjokis.id_paket ? Colors.blue : Color(0xff22577A),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Nama Paket : ${listjokis.nama_paket}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
                             ),
                           ),
-                        );
-                      },
+                          SizedBox(height: 5),
+                          Text(
+                            'Rank : ${listjokis.joki_rank}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Harga : ${listjokis.harga_joki}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-  
-
-                // Your existing widgets here...
+                  );
+                },
+              ),
                 SizedBox(height: 20,),
                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -669,10 +700,6 @@ Terimakasih""",
                                 hintText: 'Masukan Nomer Hp Anda',
                                 hintStyle: TextStyle(color: Colors.white54),
                                 border: InputBorder.none,
-                                // border: OutlineInputBorder(
-                                //   borderSide: BorderSide(color: Colors.white),
-                                //   borderRadius: BorderRadius.circular(5),
-                                // ),
                                 contentPadding: EdgeInsets.only(left: 10),
                               ),
                               inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Hanya angka yang diizinkan
@@ -695,7 +722,7 @@ Terimakasih""",
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         child: ElevatedButton(
                         onPressed: () {
-                          // Tambahkan logika fungsi tombol di sini
+                          sendOrderData();
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(double.infinity, 50),
@@ -723,9 +750,6 @@ Terimakasih""",
                       ),
                     ),
                      SizedBox(height: 30,),
-                        
-
-
               ],
             );
           } else {

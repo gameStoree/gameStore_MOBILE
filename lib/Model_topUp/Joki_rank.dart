@@ -1,23 +1,22 @@
 
-
 class Datajoki {
-  final int id;
+  final int id_paket;
   final String nama_paket;
-  final String rank;
+  final String joki_rank;
   final String harga_joki;
 
-  Datajoki ({
-    required this.id,
+  Datajoki({
+    required this.id_paket,
     required this.nama_paket,
-    required this.rank,
+    required this.joki_rank,
     required this.harga_joki,
-
   });
+
   factory Datajoki.fromJson(Map<String, dynamic> json) {
     return Datajoki(
-      id: json['id'],
+      id_paket: json['id'],
       nama_paket: json['nama_paket'],
-      rank: json['joki_rank'],
+      joki_rank: json['joki_rank'],
       harga_joki: json['harga_joki'],
     );
   }

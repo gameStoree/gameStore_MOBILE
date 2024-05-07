@@ -182,7 +182,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     ],
                   ),
                 ),
-// image Slider
 SizedBox(height: 10),
     Column(
   children: [

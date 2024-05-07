@@ -45,6 +45,7 @@ class _loginState extends State<login> {
       if (response.statusCode == 200) {
          var responseBody = response.body;
     var userData = responseBody['user'];
+    var userId = userData['id'];
     var email = userData['email'];
     var nama_lengkap = userData['nama_lengkap'];
     var alamat = userData['alamat'];
@@ -54,6 +55,7 @@ class _loginState extends State<login> {
     SpUtil.putString('nama_lengkap', nama_lengkap);
     SpUtil.putString('token', token);
     SpUtil.putString('alamat', alamat);
+    SpUtil.putInt('id_user', userId);
     // SpUtil.putString('foto_user', foto);
     Get.offAllNamed('/home');
         Get.snackbar(
