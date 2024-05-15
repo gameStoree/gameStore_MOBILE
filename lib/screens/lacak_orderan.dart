@@ -17,42 +17,71 @@
     TextEditingController _orderIdController = TextEditingController();
     Pemesanan? _order;
 
-    Future<void> _searchOrder() async {
-      final String orderId = _orderIdController.text;
-      final url = 'http://10.0.2.2:8000/api/pemesanan/$orderId';
-      final response = await http.get(Uri.parse(url));
+    
 
-      if (response.statusCode == 200) {
-        setState(() {
-          _order = Pemesanan.fromJson(json.decode(response.body)['data']);
-        });
-        // Navigasi ke halaman detail_order jika data ditemukan
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OrderDetailWidget(order: _order!),
-          ),
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text("Id Pemesanan tidak ditemukan!"),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("OK"),
-                ),
-              ],
-            );
-          },
-        );
-      }
+Future<void> _searchOrder() async {
+  final String orderId = _orderIdController.text;
+  final url = 'http://10.0.2.2:8000/api/pemesanan/$orderId';
+  final response = await http.get(Uri.parse(url));
+
+  if (response.statusCode == 200) {
+    final responseData = json.decode(response.body)['pemesanan'];
+    if (responseData != null) {
+      print('Response data: $responseData');
+      setState(() {
+        _order = Pemesanan.fromJson(responseData);
+      });
+
+      // Navigasi ke halaman detail_order jika data ditemukan
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrderDetailWidget(order: _order!),
+        ),
+      );
+    } else {
+      // Tampilkan pesan kesalahan bahwa data tidak ditemukan
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("Id Pemesanan tidak ditemukan!"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
     }
+  } else {
+    // Tampilkan pesan kesalahan jika respons tidak berhasil
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text("Terjadi kesalahan saat mengambil data!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+
 
     @override
  Widget build(BuildContext context) {

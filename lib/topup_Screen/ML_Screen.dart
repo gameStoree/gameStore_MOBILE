@@ -1,16 +1,233 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-// import 'package:project/Ketentuan%20TopUp/KT_ml_TopUp.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:project/Ketentuan%20TopUp/Ketentuan_topup.dart';
+import 'package:project/Model_topUp/Diamond_model.dart';
 import 'package:project/widgets/home_buttom.dart';
+import 'package:http/http.dart' as http;
+import 'package:sp_util/sp_util.dart';
 
-class MlScreen extends StatelessWidget {
 
-  // String dropdownValue = 'Lihat Cara Transaksi'; // Nilai dropdown awal
+  class MlScreen extends StatefulWidget {
+  const MlScreen({Key? key}) : super(key: key);
 
   @override
+  State<MlScreen> createState() => _MLScreenState();
+}
+
+class _MLScreenState extends State<MlScreen> {
+  TextEditingController idGame = TextEditingController();
+  TextEditingController servergame = TextEditingController();
+  TextEditingController noHp = TextEditingController();
+
+  late int _selectedDiamond = 0;
+  // late String _selectedDiamondJumlah = '';
+  // late String _selectedDiamondHarga = '';
+  late Future<List<Diamond>> _diamondsFuture;
+  String result = '';
+
+Future<void> memuatpesanan(BuildContext context) async {
+  EasyLoading.show(status: 'Pesanan anda Diproses');
+  int userId = SpUtil.getInt('id_user') ?? 0;
+  String idGameText = idGame.text;
+  String serverGameText = servergame.text;
+  String noHpText = noHp.text;
+
+  if (idGameText.isEmpty ||
+      serverGameText.isEmpty ||
+      _selectedDiamond == 0 ||
+      noHpText.isEmpty) {
+    // Menyembunyikan loading indicator
+    EasyLoading.dismiss();
+    print('Mohon lengkapi semua field sebelum melakukan pemesanan.');
+    return;
+  }
+
+  // Gabungkan nilai dari kedua TextField menjadi satu nilai
+  String combinedIdGame = '$idGameText $serverGameText';
+  print("Nilai combinedIdGame: $combinedIdGame");
+  final url = Uri.parse('http://10.0.2.2:8000/api/pemesanan-diamond');
+  final Map<String, dynamic> PesananOrder = {
+    // Menggunakan nilai yang telah digabungkan
+    'id_game': combinedIdGame,
+    'id_diamond': _selectedDiamond.toString(),
+    'metode_pembayaran': 'Payment Gateway',
+    'bukti_tf': 'kosong',
+    'no_hp': noHpText.toString(),
+    'status': 'pending',
+    'id_user': userId.toString(),
+  };
+
+  // Melakukan permintaan HTTP POST
+  print('pemesanan : $PesananOrder');
+  try {
+    final response = await http.post(
+      url,
+      body: PesananOrder,
+    );
+    print('Response status code: ${response.statusCode}');
+    // Menyembunyikan loading indicator
+    EasyLoading.dismiss();
+    if (response.statusCode == 201) {
+      print('Transaction stored successfully');
+      // Menampilkan snackbar jika pemesanan sukses
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pemesanan berhasil disimpan'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      // Menutup popup jika pemesanan sukses
+      Navigator.of(context).pop();
+    } else {
+      print('Failed to store transaction');
+      // Menampilkan snackbar jika pemesanan gagal
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal menyimpan pemesanan'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (error) {
+    // Menyembunyikan loading indicator
+    EasyLoading.dismiss();
+    print('Error: $error');
+    // Menampilkan snackbar jika terjadi kesalahan saat melakukan pemesanan
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Terjadi kesalahan saat memuat pemesanan'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
+
+
+
+    //====== Logic Search Id Game Mobile legend ======//
+Future<void> searchIdGame() async {
+  String idMl = idGame.text;
+  String server = servergame.text;
+  String phonenumber = noHp.text;
+  
+  if (idMl.isEmpty || server.isEmpty || phonenumber.isEmpty || _selectedDiamond == 0) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromARGB(255, 255, 124, 114), 
+          title: Text("Peringatan !!"),
+          content: Text("Harap Masukan semuah informasi yang diperlukan"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+    return;
+  }
+  EasyLoading.show(status: 'Memuat Pemesanan');
+
+  final response = await http.get(
+    Uri.parse('https://api.isan.eu.org/nickname/ml?id=$idMl&zone=$server'),
+  );
+
+  if (response.statusCode == 200) {
+    EasyLoading.dismiss();
+    final jsonResponse = json.decode(response.body);
+    int id = jsonResponse['id'];
+    int zoneId = jsonResponse['zoneId'];
+    String name = jsonResponse['name'];
+
+    setState(() {
+      result = 'ID:  $id\nServer:  $zoneId\nNickname: $name';
+    });
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xff22577A),
+          title: Text("Buat Pemesanan", style: TextStyle(color: Colors.white)),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Pastikan data akun Kamu dan produk yang Kamu pilih valid dan sesuai.", style: TextStyle(color: Colors.white)),
+              Divider(color: const Color.fromARGB(255, 255, 255, 255)),
+              Text(result, style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text("Item ID:  $_selectedDiamond", style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text("Phone Number: ${noHp.text}", style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text("Product :   Mobile Legend Diamond", style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text("Payment :   QRIS (All Payment)", style: TextStyle(fontSize: 16, color: Colors.white)),
+              Divider(color: const Color.fromARGB(255, 255, 255, 255)),
+            ],
+          ),
+ 
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batalkan", style: TextStyle(color: Colors.red, fontSize: 18)),
+            ),
+            TextButton(
+              onPressed: () {
+                memuatpesanan(context);
+              },
+              child: Text("Pesan Sekarang!", style: TextStyle(color: Colors.yellow, fontSize: 18)),
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    // Menampilkan snackbar untuk memberi tahu pengguna bahwa ID game dan server tidak ditemukan
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('ID game dan server tidak ditemukan.'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    // Menyembunyikan loading indicator
+    EasyLoading.dismiss();
+    print('Failed to load data: ${response.statusCode}');
+  }
+}
+
+
+
+    //======= logic api get data diamond =======//
+Future<List<Diamond>> fetchDiamonds(String gameName) async {
+    final response =
+        await http.get(Uri.parse('http://10.0.2.2:8000/api/diamonds/Mobile Legend'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body)['data'];
+      return data.map((json) => Diamond.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load diamonds');
+    }
+  }
+
+  @override  
+   void initState() {
+    super.initState();
+     _diamondsFuture = fetchDiamonds('Mobile Legend');
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xffc7f9cc),
       appBar: AppBar( 
         title: Text(
           'Top Up Mobile legend',
@@ -29,293 +246,441 @@ class MlScreen extends StatelessWidget {
           },
         ),
       ),
-
       // batas body dengan widget 
-
-      body: ListView( 
-        children: <Widget>[
-          
-          Container(
-            height: 200, 
-            width: double.infinity, 
-            color: Colors.blue,
-            child: Image.asset(
-              'images/wl_topup_ml.png', 
-              fit: BoxFit.cover, 
-            ),
-          ),
-          // Bagian bawah berisi teks
-
-             Container(
-      padding: EdgeInsets.all(16),
-      color: Color(0xff22577A),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-    
-      Image.asset(
-        'images/label_ml.png',
-        width: 80, 
-        height: 80,
-      ),
-      SizedBox(width: 16), 
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // Teks pertama
-            Text(
-              'Mobile legend Bang Bang', 
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white, 
-              ),
-            ),
-            SizedBox(height: 1), 
-            // Teks "Moonton"
-            Text(
-              'Moonton', 
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white, 
-              ),
-            ),
-            
-            Padding(
-              padding: EdgeInsets.only(top: 10), 
-              child: Row(
-                children: <Widget>[
-                  // Icon centang
-                  Icon(
-                    Icons.check_circle,
-                    color: Colors.green, // Warna ikon centang
+     body: _diamondsFuture == null
+          ? Center(child: CircularProgressIndicator())
+          : FutureBuilder<List<Diamond>>(
+              future: _diamondsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  List<Diamond> diamonds = snapshot.data!;
+            return ListView(
+              children: [
+                Container(
+                  height: 200, 
+                  width: double.infinity, 
+                  color: Colors.blue,
+                  child: Image.asset(
+                    'images/wl_topup_ml.png', 
+                    fit: BoxFit.cover, 
                   ),
-                  SizedBox(width: 10), 
+                ),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  color: Color(0xff22577A),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Image.asset(
+                        'images/label_ml.png',
+                        width: 80, 
+                        height: 80,
+                      ),
+                      SizedBox(width: 16), 
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Mobile Legend Bang Bang', 
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white, 
+                              ),
+                            ),
+                            SizedBox(height: 1), 
+                            Text(
+                              'Montoon', 
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white, 
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10), 
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green, 
+                                  ),
+                                  SizedBox(width: 10), 
+                                  Text(
+                                    'Terverifikasi', 
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white, 
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 8, top: 15, left: 15, right: 15), 
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Color(0xff22577A),
+                    border: Border.all(color: Color(0xffC7F9CC)), 
+                    borderRadius: BorderRadius.circular(10), 
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.security,
+                            color: Color(0xff80ED99),
+                          ),
+                          SizedBox(width: 8), 
+                          Text(
+                            'Jaminan Layanan', 
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.phone,
+                            color: Color(0xff80ED99),
+                          ),
+                          SizedBox(width: 8), 
+                          Text(
+                            'Jaminan Layanan 24 Jam', 
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.credit_card,
+                            color: Color(0xff80ED99),
+                          ),
+                          SizedBox(width: 8), 
+                          Text(
+                            'Pembayaran Aman & Terpercaya', 
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.flash_on,
+                            color: Color(0xff80ED99),
+                          ),
+                          SizedBox(width: 8), 
+                          Text(
+                            'Proses Cepat & Otomatis', 
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => KT_freefire()),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 8, left: 15, right: 15), 
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Color(0xff22577A),
+                      border: Border.all(color: Color(0xffC7F9CC)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:  [
+                        Text(
+                          'Lihat Cara Transaksi Disini',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Column( 
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xffC7F9CC)),
+                        color: Color(0xff22577A),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            '1.  Masukan Data Akun Kamu',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 15), 
+                          Text(
+                            'ID Game',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),  
+                         Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Color(0xff22577A),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: Colors.white),
+                          ),
+                          child: TextFormField(
+                            controller: idGame,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: 'Ketikan ID Game kamu',
+                              hintStyle: TextStyle(color: Colors.white54),
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'ID Game harus diisi';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                          SizedBox(height: 15), 
+                          Text(
+                            'Server Game',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),  
+                          Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: TextFormField(
+                            controller: servergame,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              // labelText: 'Server',
+                              hintText: 'Ketikan Server Game kamu',
+                              hintStyle: TextStyle(color: Colors.white54),
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Server Game harus diisi';
+                              }
+                              return null;
+                            },
+                          ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 8, left: 20, right: 15),
+                      child: Text(
+                        'Diamond',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: diamonds.length,
+                      itemBuilder: (context, index) {
+                        Diamond diamond = diamonds[index];
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedDiamond = diamond.id;
+                              // _selectedDiamondJumlah = diamond.jumlahDiamond;
+                              // _selectedDiamondHarga = diamond.hargaDiamond.toString();
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: _selectedDiamond == diamond.id ? Colors.blue : Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                 SizedBox(height: 5),
+                                Text(
+                                  'ID Diamond :  ${diamond.id}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Jumlah :  ${diamond.jumlahDiamond}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Harga : ${diamond.hargaDiamond}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),   
+              Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+            Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    color: Color(0xff22577A),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.white),
+                  ),
+                  child: Padding(
+                   padding: const EdgeInsets.all(2.0),
+                  child: TextFormField(
+                    controller: noHp,
+                    style: TextStyle(color: Colors.white,
+                    fontSize: 18,
+                    ),
+                   decoration: InputDecoration(
+                      hintText: 'Masukan Nomer Hp Anda',
+                      hintStyle: TextStyle(color: Colors.white54),
+                       border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(left: 10),
+                    ),
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Harap masukkan Hp Anda';
+                      }
+                      return null;
+                    },
+                  ),
+              ),
+           ),
+        ],
+  ),
+        ),
+            ],
+              ),
+                SizedBox(height: 20,),
+                Container(
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              child: ElevatedButton(
+              onPressed: () {
+               searchIdGame();
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Color(0xff22577A),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.shopping_cart,
+                  color: Colors.yellow,),
+                  SizedBox(width: 7),
                   Text(
-                    'Terverifikasi', 
+                    "Beli Sekarang!",
                     style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white, // Warna teks
+                      fontSize: 20,
+                      color: Colors.yellow, // Warna teks kuning
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-    ],
-  ),
-),
-Container(
-
-  margin: EdgeInsets.only(bottom: 20, top: 20, left: 20, right: 20), 
-  //  margin: EdgeInsets.all(20),
-  padding: EdgeInsets.all(20),
-  decoration: BoxDecoration(
-    color: Color(0xff22577A),
-    border: Border.all(color: Color(0xffC7F9CC)), 
-    borderRadius: BorderRadius.circular(10), 
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      
-      Row(
-        children: <Widget>[
-          Icon(
-            Icons.security,
-            color: Color(0xff80ED99),
           ),
-          SizedBox(width: 8), 
-          Text(
-            'Jaminan Layanan', 
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-     SizedBox(height: 10),
-      Row(
-        children: <Widget>[
-          Icon(
-            Icons.phone,
-            color: Color(0xff80ED99),
-          ),
-          SizedBox(width: 8), // Spasi horizontal antara ikon dan teks
-          Text(
-            'Jaminan Layanan 24 Jam', 
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-      // Baris ketiga
-       SizedBox(height: 10),
-      Row(
-        children: <Widget>[
-          Icon(
-            Icons.credit_card,
-            color: Color(0xff80ED99),
-          ),
-          SizedBox(width: 8), 
-          Text(
-            'Pembayaran Aman & Terpercaya', 
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-      // Baris keempat
-       SizedBox(height: 10),
-      Row(
-        children: <Widget>[
-          Icon(
-            Icons.flash_on,
-            color: Color(0xff80ED99),
-          ),
-          SizedBox(width: 8), 
-          Text(
-            'Proses Cepat & Otomatis', 
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    ],
-  ),
-),
-
-  //Car tata cara dan ketentuan 
-GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => KT_Ml()),
-        );
-      },
-   child : Container(
-  margin: EdgeInsets.only(bottom: 20, left: 20, right: 20), 
-  padding: EdgeInsets.all(20),
-  decoration: BoxDecoration(
-    color: Color(0xff22577A),
-    border: Border.all(color: Color(0xffC7F9CC)),
-    borderRadius: BorderRadius.circular(10),
-  ),
-  child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children:  [
-           
-            Text(
-              'Lihat Cara Transaksi Disini',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward,
-              color: Colors.white,
-            ),
-          ],
-        ),
-),
-),
-
-  // batas ketentuan
-
-
-       Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: <Widget>[
-    Container(
-      margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xffC7F9CC)),
-        color: Color(0xff22577A),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            '1      Masukan Data Akun Kamu',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-            ),
-          ), 
-          SizedBox(height: 15), 
-           Text(
-        'ID',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14,
-        ),
-      ),
-          SizedBox(height: 9),   
-          Container(
-            margin: EdgeInsets.only(bottom: 10),
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Color(0xff22577A),
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: Colors.white),
-            ),
-            child: TextField(
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Masukan ID Game kamu',
-                hintStyle: TextStyle(color: Colors.white54),
-                border: InputBorder.none,
-              ),
-            ),
-          ), SizedBox(height: 10), 
-           Text(
-        'Server',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14,
-        ),
-      ),
-          SizedBox(height: 9),   
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Color(0xff22577A),
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: Colors.white),
-            ),
-            child: TextField(
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Masukan Server Game Kamu',
-                hintStyle: TextStyle(color: Colors.white54),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ],
-),
-
-
-
-
-        ],
+                   SizedBox(height: 30,),
+              ],
+            );
+          } else {
+            return Center(child: Text('No data available'));
+          }
+        },
       ),
       bottomNavigationBar: HomeBottomBar() ,
     );

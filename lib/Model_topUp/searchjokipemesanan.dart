@@ -1,6 +1,6 @@
 class Pemesanan {
   final int id;
-  final int idPaket;
+  final int? idPaket;
   final String? loginVia;
   final String? nicknameMl;
   final String? emailNoHpMontonID;
@@ -12,17 +12,17 @@ class Pemesanan {
   final String? noHp;
   final String? status;
   final int idUser;
-  final int idWorker;
-  final String namaPaket;
-  final String namaUser;
-  final String namaWorker;
-  final String rank_joki;
-  final String harga_joki;
+  final int? idWorker;
+  final String? namaPaket;
+  final String? namaUser;
+  final String? namaWorker;
+  final String? rank_joki;
+  final String? harga_joki;
   final String? createtgl;
 
   Pemesanan({
     required this.id,
-    required this.idPaket,
+     this.idPaket,
     this.loginVia,
     this.nicknameMl,
     this.emailNoHpMontonID,
@@ -34,12 +34,12 @@ class Pemesanan {
     this.noHp,
     this.status,
     required this.idUser,
-    required this.idWorker,
-    required this.namaPaket,
-    required this.namaUser,
-    required this.namaWorker,
-    required this.harga_joki,
-    required this.rank_joki,
+    this.idWorker,
+     this.namaPaket,
+     this.namaUser,
+     this.namaWorker,
+     this.harga_joki,
+     this.rank_joki,
     this.createtgl,
   });
 

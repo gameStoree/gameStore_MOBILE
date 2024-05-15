@@ -1,8 +1,12 @@
 import 'dart:convert';
-import 'dart:math';
+import 'dart:ffi' hide Size;
+import 'dart:ui';
+
+// import 'dart:math';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:project/Ketentuan%20TopUp/ketentuan%20_joki.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
@@ -17,7 +21,10 @@ class JasaRank extends StatefulWidget {
 
 class _JasaRankState extends State<JasaRank> {
   late String valueChoose;
-  List<String> listItem = ["Pilih Via Login ", "Moonton(Rekomendasi)", "Vk", "Tiktok", "Facrbook"];
+  late Future<List<Datajoki>> _jokiFuture;
+  late int _selectedPaketId = 0;
+
+  List<String> listItem = ["Pilih Via Login ", "Moonton(Rekomendasi)", "Vk", "Tiktok", "Facebook"];
   TextEditingController idGame = TextEditingController();
   TextEditingController servergame = TextEditingController();
   TextEditingController email_moonton = TextEditingController();
@@ -28,13 +35,10 @@ class _JasaRankState extends State<JasaRank> {
 
 
   Future<void> sendOrderData() async {
-  if (_selectedPaketId == 0) {
-    print('Pilih paket joki terlebih dahulu');
-    return;
-  }
-  final url = Uri.parse('http://10.0.2.2:8000/api/transactions');
+  EasyLoading.show(status: 'Pesanan anda Diproses');
   int userId = SpUtil.getInt('id_user') ?? 0;
-  
+
+  final url = Uri.parse('http://10.0.2.2:8000/api/transactions');
   final Map<String, dynamic> orderData = {
   // 'id': transactionId,
   'id_paket': _selectedPaketId.toString(),
@@ -45,6 +49,7 @@ class _JasaRankState extends State<JasaRank> {
   'request_hero': requestHero.text.toString(),
   'catatan_penjoki': catatan.text.toString(),
   'metode_pembayaran' : 'ipaymu',
+  'bukti_tf' : 'kosong',
   'no_hp': Nohp.text.toString(),
   'status': 'pending',
   'id_user': userId.toString(),
@@ -56,30 +61,134 @@ class _JasaRankState extends State<JasaRank> {
       url,
       body: orderData,
     );
-
+     print('Response status code: ${response.statusCode}');
+    EasyLoading.dismiss();
     if (response.statusCode == 201) {
       print('Transaction stored successfully');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pemesanan berhasil disimpan'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      Navigator.of(context).pop();
     } else {
       print('Failed to store transaction');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal menyimpan pemesanan'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   } catch (error) {
+     EasyLoading.dismiss();
     print('Error: $error');
+    // Menampilkan snackbar jika terjadi kesalahan saat melakukan pemesanan
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Terjadi kesalahan saat memuat pemesanan'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 }
 
 
-// int generateTransactionId() {
-//   int timestamp = DateTime.now().millisecondsSinceEpoch;
-//   int random = Random().nextInt(90) + 100;
-//   int transactionId = int.parse('76$timestamp$random');
-//   return transactionId;
-// }
+Future<void> PopupPemesanan(BuildContext context) async {
+  EasyLoading.show(status: 'Memuat Pemesanan');
 
+  String idGames = idGame.text;
+  // String server = servergame.text;
+  String emailMoonton = email_moonton.text;
+  String pw = password.text;
+  String Hero = requestHero.text;
+  String note = catatan.text;
+  String phonenumber = Nohp.text;
 
-  
-  late Future<List<Datajoki>> _jokiFuture;
-  late int _selectedPaketId = 0;
+  if (idGames.isEmpty || valueChoose == 0 || emailMoonton.isEmpty || pw.isEmpty || Hero.isEmpty || note.isEmpty || phonenumber.isEmpty) {
+    EasyLoading.dismiss();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromARGB(255, 255, 124, 114),
+          title: Text("Peringatan !!"),
+          content: Text("Harap Masukan semua informasi yang diperlukan"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            )
+          ],
+        );
+      }
+    );
+    return;
+  }
 
+  EasyLoading.dismiss();
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Color(0xff22577A),
+        title: Text("Buat Pemesanan", style: TextStyle(color: Colors.white)),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Pastikan data akun Kamu dan produk yang Kamu pilih valid dan sesuai.",
+              style: TextStyle(color: Colors.white),
+            ),
+            Divider(color: const Color.fromARGB(255, 255, 255, 255)),
+            Text("Login: ${valueChoose}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("IdGame: ${idGames}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Email/Moonton: ${emailMoonton}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Password: ${pw}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Hero: ${Hero}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Catatan: ${note}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Item ID: $_selectedPaketId", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Phone Number: ${phonenumber}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Product: Mobile Legend Diamond", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Payment: QRIS (All Payment)", style: TextStyle(fontSize: 16, color: Colors.white)),
+            Divider(color: const Color.fromARGB(255, 255, 255, 255)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Batalkan", style: TextStyle(color: Colors.red, fontSize: 18)),
+          ),
+          TextButton(
+            onPressed: () {
+              sendOrderData();
+              EasyLoading.show(status: 'Mengirim Pesanan...');
+            },
+            child: Text("Pesan Sekarang!", style: TextStyle(color: Colors.yellow, fontSize: 18)),
+          ),
+        ],
+      );
+    }
+  );
+}
+   
+  //=========== Logic Api get data Diamond ============//
 Future<List<Datajoki>> fetchJokirank(String datajoki) async {
   final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/jokirank?data=$datajoki'));
   if (response.statusCode == 200) {
@@ -312,7 +421,7 @@ Berikut Syarat Dan Ketentuan Sebelum Order Jasa Joki :
 Jika Butuh Bantuan Harap Hubungi Admin Gamestore.ID
 Terimakasih""",
           btnOkOnPress: () {},
-        ).show();// Show the AwesomeDialog here
+        ).show();
                   },
                   child: Container(
                     margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
@@ -645,6 +754,14 @@ Terimakasih""",
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
+                            'Id Paket : ${listjokis.id_paket}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
                             'Nama Paket : ${listjokis.nama_paket}',
                             style: TextStyle(
                               color: Colors.white,
@@ -722,7 +839,7 @@ Terimakasih""",
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         child: ElevatedButton(
                         onPressed: () {
-                          sendOrderData();
+                          PopupPemesanan(context);
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(double.infinity, 50),

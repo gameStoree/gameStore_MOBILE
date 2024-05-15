@@ -33,7 +33,7 @@ class _FFScreenState extends State<FFScreen> {
 
   Future<List<Diamond>> fetchDiamonds(String gameName) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/api/diamonds/free.fire'));
+        await http.get(Uri.parse('http://10.0.2.2:8000/api/diamonds/Free Fire'));
 
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];

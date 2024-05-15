@@ -228,8 +228,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                   ),
                   SizedBox(height: 2.0),
                   Text("${widget.order.catatanPenjoki ?? 'Tidak ada data'}"),
-                  SizedBox(height: 2.0),
-                  Text("${widget.order.requestHero ?? 'Tidak ada data'}"),
+        
                   SizedBox(height: 8.0),
                   Divider(color: Colors.grey),
                   SizedBox(height: 8.0),
