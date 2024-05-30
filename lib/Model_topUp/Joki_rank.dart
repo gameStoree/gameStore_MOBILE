@@ -3,7 +3,7 @@ class Datajoki {
   final int id_paket;
   final String nama_paket;
   final String joki_rank;
-  final String harga_joki;
+  final int harga_joki;
 
   Datajoki({
     required this.id_paket,
@@ -21,24 +21,3 @@ class Datajoki {
     );
   }
 }
-
-
-// class Datajoki {
-//   final String namaPaket;
-//   final int jumlahDiamond;
-//   final int hargaDiamond;
-
-//   Datajoki({
-//     required this.namaPaket,
-//     required this.jumlahDiamond,
-//     required this.hargaDiamond,
-//   });
-
-//   factory Datajoki.fromJson(Map<String, dynamic> json) {
-//     return Datajoki(
-//       namaPaket: json['namaPaket'],
-//       jumlahDiamond: json['jumlahDiamond'],
-//       hargaDiamond: json['hargaDiamond'],
-//     );
-//   }
-// }

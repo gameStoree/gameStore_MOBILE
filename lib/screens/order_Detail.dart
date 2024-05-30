@@ -149,12 +149,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
-                      Text(
-                        'Metode Pembayaran',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.metodePembayaran ?? 'Tidak ada data'}"),
+
                     ],
                   ),
                 ),
@@ -191,7 +186,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                   SizedBox(height: 2.0),
-                  Text("${widget.order.nicknameMl ?? 'Tidak ada data'}"),
+                  Text("${widget.order.idserver ?? 'Tidak ada data'}"),
                   SizedBox(height: 8.0),
                   Divider(color: Colors.grey),
                   SizedBox(height: 8.0),

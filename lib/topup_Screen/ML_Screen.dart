@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:project/Ketentuan%20TopUp/Ketentuan_topup.dart';
 import 'package:project/Model_topUp/Diamond_model.dart';
@@ -24,12 +23,10 @@ class _MLScreenState extends State<MlScreen> {
   TextEditingController noHp = TextEditingController();
 
   late int _selectedDiamond = 0;
-  // late String _selectedDiamondJumlah = '';
-  // late String _selectedDiamondHarga = '';
   late Future<List<Diamond>> _diamondsFuture;
   String result = '';
 
-Future<void> memuatpesanan(BuildContext context) async {
+Future<void>memuatpesanan(BuildContext context) async {
   EasyLoading.show(status: 'Pesanan anda Diproses');
   int userId = SpUtil.getInt('id_user') ?? 0;
   String idGameText = idGame.text;
@@ -37,31 +34,22 @@ Future<void> memuatpesanan(BuildContext context) async {
   String noHpText = noHp.text;
 
   if (idGameText.isEmpty ||
-      serverGameText.isEmpty ||
-      _selectedDiamond == 0 ||
-      noHpText.isEmpty) {
-    // Menyembunyikan loading indicator
+      serverGameText.isEmpty || _selectedDiamond == 0 || noHpText.isEmpty) {
     EasyLoading.dismiss();
     print('Mohon lengkapi semua field sebelum melakukan pemesanan.');
     return;
   }
-
-  // Gabungkan nilai dari kedua TextField menjadi satu nilai
   String combinedIdGame = '$idGameText $serverGameText';
   print("Nilai combinedIdGame: $combinedIdGame");
   final url = Uri.parse('http://10.0.2.2:8000/api/pemesanan-diamond');
   final Map<String, dynamic> PesananOrder = {
-    // Menggunakan nilai yang telah digabungkan
-    'id_game': combinedIdGame,
+    'id_server': combinedIdGame,
     'id_diamond': _selectedDiamond.toString(),
-    'metode_pembayaran': 'Payment Gateway',
-    'bukti_tf': 'kosong',
+    // 'jumlah_bintang':jumlah_star.toString(),
     'no_hp': noHpText.toString(),
     'status': 'pending',
     'id_user': userId.toString(),
   };
-
-  // Melakukan permintaan HTTP POST
   print('pemesanan : $PesananOrder');
   try {
     final response = await http.post(
@@ -69,22 +57,20 @@ Future<void> memuatpesanan(BuildContext context) async {
       body: PesananOrder,
     );
     print('Response status code: ${response.statusCode}');
-    // Menyembunyikan loading indicator
     EasyLoading.dismiss();
     if (response.statusCode == 201) {
-      print('Transaction stored successfully');
-      // Menampilkan snackbar jika pemesanan sukses
+      final responseData = json.decode(response.body);
+      final orderId = responseData['id'];
+      print('Transaction stored successfully with ID: $orderId');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Pemesanan berhasil disimpan'),
+          content: Text('Pemesanan berhasil disimpan dengan ID: $orderId'),
           backgroundColor: Colors.green,
         ),
       );
-      // Menutup popup jika pemesanan sukses
       Navigator.of(context).pop();
     } else {
       print('Failed to store transaction');
-      // Menampilkan snackbar jika pemesanan gagal
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Gagal menyimpan pemesanan'),
@@ -93,10 +79,8 @@ Future<void> memuatpesanan(BuildContext context) async {
       );
     }
   } catch (error) {
-    // Menyembunyikan loading indicator
     EasyLoading.dismiss();
     print('Error: $error');
-    // Menampilkan snackbar jika terjadi kesalahan saat melakukan pemesanan
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Terjadi kesalahan saat memuat pemesanan'),
@@ -105,6 +89,7 @@ Future<void> memuatpesanan(BuildContext context) async {
     );
   }
 }
+
 
 
 
@@ -166,13 +151,13 @@ Future<void> searchIdGame() async {
               Divider(color: const Color.fromARGB(255, 255, 255, 255)),
               Text(result, style: TextStyle(fontSize: 16, color: Colors.white)),
               Text("Item ID:  $_selectedDiamond", style: TextStyle(fontSize: 16, color: Colors.white)),
+              // Text("Jumlah Item : ${jumlah_star}", style: TextStyle(fontSize: 16, color: Colors.white),),
               Text("Phone Number: ${noHp.text}", style: TextStyle(fontSize: 16, color: Colors.white)),
               Text("Product :   Mobile Legend Diamond", style: TextStyle(fontSize: 16, color: Colors.white)),
-              Text("Payment :   QRIS (All Payment)", style: TextStyle(fontSize: 16, color: Colors.white)),
+              // Text("Payment :   QRIS (All Payment)", style: TextStyle(fontSize: 16, color: Colors.white)),
               Divider(color: const Color.fromARGB(255, 255, 255, 255)),
             ],
           ),
- 
           actions: [
             TextButton(
               onPressed: () {
@@ -180,10 +165,10 @@ Future<void> searchIdGame() async {
               },
               child: Text("Batalkan", style: TextStyle(color: Colors.red, fontSize: 18)),
             ),
-            TextButton(
-              onPressed: () {
-                memuatpesanan(context);
-              },
+           TextButton(
+                onPressed: () {
+                  memuatpesanan(context);
+                },
               child: Text("Pesan Sekarang!", style: TextStyle(color: Colors.yellow, fontSize: 18)),
             ),
           ],
@@ -584,7 +569,7 @@ Future<List<Diamond>> fetchDiamonds(String gameName) async {
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  'Harga : ${diamond.hargaDiamond}',
+                                  'Harga : Rp ${diamond.hargaDiamond}',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -598,7 +583,7 @@ Future<List<Diamond>> fetchDiamonds(String gameName) async {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),   
+                SizedBox(height:3),
               Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

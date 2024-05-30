@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:project/Model_topUp/Diamond_model.dart';
+import 'package:project/Model_topUp/searchjokipemesanan.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:project/screens/lacak_orderan.dart';
 import 'package:project/screens/welcome_screen.dart';
@@ -10,10 +12,12 @@ import 'package:project/screens/profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // List<Pemesanan> Datajoki= await fetchJokirank();
   await SpUtil.getInstance();
   await Firebase.initializeApp();
   runApp( MyApp());
-}
+ 
+ }
 
 class MyApp extends StatelessWidget {
    MyApp({Key? key}) : super(key: key);

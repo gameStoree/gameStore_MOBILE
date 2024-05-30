@@ -1,5 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:project/Login_2/sendOTP.dart';
+// import 'otp_verification_page.dart';
+
 
 class lupaPw extends StatefulWidget {
   const lupaPw({Key? key});
@@ -9,11 +13,27 @@ class lupaPw extends StatefulWidget {
 }
 
 class _lupaPwState extends State<lupaPw> {
-  TextEditingController email = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  reset() async {
-    await FirebaseAuth.instance.sendPasswordResetEmail(email: email.text);
+
+   Future<void> sendOTP() async {
+    final response = await http.post(
+      Uri.parse('http://your-laravel-api-url/api/forgot-password'),
+      body: {'email': _emailController.text},
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => OTPVerificationPage(email: _emailController.text)),
+      );
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to send OTP')));
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +61,7 @@ class _lupaPwState extends State<lupaPw> {
                 height: 80,
               ),
               TextField(
-                controller: email,
+                controller: _emailController,
                 decoration: InputDecoration(
                   hintText: "Masukkan email anda",
                   filled: true,
@@ -56,7 +76,7 @@ class _lupaPwState extends State<lupaPw> {
                 height: 45,
               ),
               ElevatedButton(
-                onPressed: () => reset(),
+                onPressed: sendOTP,
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
@@ -64,7 +84,7 @@ class _lupaPwState extends State<lupaPw> {
                   ),
                 ),
                 child: Text(
-                  "Send Link",
+                  "Send Otp",
                   style: TextStyle(fontSize: 20),
                 ),
               ),

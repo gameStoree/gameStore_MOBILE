@@ -1,11 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:sp_util/sp_util.dart';
 import 'package:http/http.dart' as http;
-
 import '../widgets/home_buttom.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:project/Model_topUp/model_image.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -15,108 +16,126 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  File? image;
-  late String imagePath;
+  String imagePath = '';
+  File? _image;
+  final picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    // Ambil path gambar dari SpUtil saat halaman profil dimuat
-    getSavedImagePath();
+    fetchPhotoUrl();
   }
 
-Future<void> getSavedImagePath() async {
-    // Mengambil path gambar dari SpUtil
-    imagePath = SpUtil.getString('imagePath') ?? '';
-    setState(() {});
-  }
-
+ void fetchPhotoUrl() async {
+  await SpUtil.getInstance();
+  int userId = SpUtil.getInt('id_user') ?? 0;
+  print('User ID: $userId');
   
-Future<void> uploadPhoto(File? imageFile) async {
-    if (imageFile == null) {
-      return;
+  if (userId != null) {
+    final url = 'http://10.0.2.2:8000/api/users/$userId/getphoto';
+    print('Fetching photo from: $url');
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          imagePath = data['photo_url'];
+        });
+        print('Photo URL: $imagePath');
+      } else {
+        print('Failed  ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
     }
-
-    var uri = Uri.parse('http://10.0.2.2:8000/api/upload-photo');
-    var request = http.MultipartRequest('POST', uri);
-    var image =
-        await http.MultipartFile.fromPath('foto_user', imageFile.path);
-    request.files.add(image);
-
-    var token = SpUtil.getString('token');
-    request.headers['Authorization'] = 'Bearer $token';
-
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      // Jika berhasil, simpan URL gambar ke SharedPreferences
-      var imageUrl = await response.stream.bytesToString();
-      SpUtil.putString('imageUrl', imageUrl);
-      print('Upload foto berhasil');
-    } else {
-      print('Upload foto gagal');
-    }
+  } else {
+    print('User ID not found');
   }
+}
 
-Future<void> getImage() async {
-  final ImagePicker picker = ImagePicker();
-  final XFile? pickedImage = await picker.pickImage(
-    source: ImageSource.gallery,
-  );
+Future<void> _getImageFromGalleryAndUpload() async {
+  final picker = ImagePicker();
+  final pickedImage = await picker.pickImage(source: ImageSource.gallery);
   if (pickedImage != null) {
-    setState(() {
-      image = File(pickedImage.path);
-    });
-    await uploadPhoto(image);
+    File image = File(pickedImage.path);
+    await _uploadImage(image);
+  } else {
+    print('User canceled image selection');
   }
 }
 
-Future<void> takePhoto() async {
-  final ImagePicker picker = ImagePicker();
-  final XFile? takenImage = await picker.pickImage(
-    source: ImageSource.camera,
-  );
-  if (takenImage != null) {
-    setState(() {
-      image = File(takenImage.path);
-    });
-    await uploadPhoto(image);
-  }
-}
+ Future<void> _uploadImage(File image) async {
+  int userId = SpUtil.getInt('id_user') ?? 0;
+  print('User ID: $userId');
+  final url = 'http://10.0.2.2:8000/api/users/$userId/photobn';
+  var request = http.MultipartRequest('POST', Uri.parse(url));
+  request.files.add(await http.MultipartFile.fromPath('foto_user', image.path));
   
+  try {
+    final response = await request.send();
+    
+    if (response.statusCode == 200) {
+      final responseString = await response.stream.bytesToString();
+      final responseData = json.decode(responseString);
+      String imagePath = responseData['path'];
+      print('Image uploaded successfully. Image path: $imagePath');
+    } else {
+      print('Failed to upload image. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error occurred during image upload: $e');
+  }
+}
 
 
+// Future<void> takePhoto() async {
+//   final ImagePicker picker = ImagePicker();
+//   final XFile? takenImage = await picker.pickImage(
+//     source: ImageSource.camera,
+//   );
+//   if (takenImage != null) {
+//     setState(() {
+//       image = File(takenImage.path);
+//     });
+//     await uploadPhoto(image);
+//   }
+// }
+  
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xff22577A),
-        title: Text(
-          'Profile',
-          style: TextStyle(color: Colors.white),
+ Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Color(0xff22577A),
+      title: Text(
+        'Profile',
+        style: TextStyle(color: Colors.white),
+      ),
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back,
+          color: Colors.white,
         ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+    ),
+    body: Container(
+      constraints: BoxConstraints.expand(),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromRGBO(34, 87, 122, 1),
+            Color.fromRGBO(76, 175, 80, 1)
+          ],
         ),
       ),
-      body: Container(
-        constraints: BoxConstraints.expand(),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(34, 87, 122, 1),
-              Color.fromRGBO(76, 175, 80, 1)
-            ],
-          ),
-        ),
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,7 +153,7 @@ Future<void> takePhoto() async {
                             title: Text('Ambil foto dari galeri'),
                             onTap: () {
                               Navigator.pop(context);
-                              getImage();
+                             _getImageFromGalleryAndUpload();
                             },
                           ),
                           ListTile(
@@ -142,7 +161,7 @@ Future<void> takePhoto() async {
                             title: Text('Ambil foto menggunakan kamera'),
                             onTap: () {
                               Navigator.pop(context);
-                              takePhoto();
+                              // takePhoto();
                             },
                           ),
                         ],
@@ -151,29 +170,30 @@ Future<void> takePhoto() async {
                   },
                 );
               },
-              child: Container(
-                width: 110,
-                height: 120,
-                margin: EdgeInsets.only(top: 50),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: imagePath.isNotEmpty // Periksa apakah imagePath tidak kosong
-                    ? ClipOval(
-                        child: Image.network(
-                          imagePath, // Gunakan URL gambar dari SharedPreferences
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Icon(
-                        Icons.person,
-                        size: 80,
-                        color: Colors.grey[700],
-                      ),
-              ),
+           child: Container(
+            width: 110,
+            height: 120,
+            margin: EdgeInsets.only(top: 50),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
             ),
-           SizedBox(height: 20),
+            child: imagePath == null
+              ? CircularProgressIndicator()
+              : Image.network(
+                  imagePath,
+                  fit: BoxFit.cover,
+                  width: 110,
+                  height: 120,
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                    return Text('!');
+                  },
+                ),
+          ),
+
+
+            ),
+            SizedBox(height: 20),
             Container(
               child: Column(
                 children: [
@@ -181,7 +201,7 @@ Future<void> takePhoto() async {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Nama Text',
+                        "${SpUtil.getString("nama_lengkap")}",
                         style: TextStyle(
                           fontSize: 23,
                           color: Colors.white,
@@ -195,219 +215,253 @@ Future<void> takePhoto() async {
                     ],
                   ),
                   SizedBox(height: 3),
-               Text("${SpUtil.getString("email")}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                ],
-              ),
-            ),
-          SizedBox(height: 20),
-                 GestureDetector(
-            onTap: () {
-              // Navigator.push(
-              //   // context,
-              //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
-              // );
-            },
-            child: Container(
-              margin: EdgeInsets.only(bottom: 20, left: 60, right: 60),
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Color(0xff34A0A4),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
                   Text(
-                    'Lihat Riwayat Pesanan Anda',
+                    "${SpUtil.getString("email")}",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
-                      
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
                     ),
-                  ),
-                  SizedBox(width: 10,),
-                  Icon(
-                    Icons.arrow_right_alt,
-                    color: Colors.white,
-                    size: 38,
                   ),
                 ],
               ),
             ),
-          ),
-              Container(
-        padding: EdgeInsets.all(8),
-        child: Text(
-          'Informasi Akun',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
-      ),
-
-              Container(
-          height: 1,
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(horizontal: 20),
-        ),
-         SizedBox(height: 10),
-           GestureDetector(
-          onTap: () {
-            // Navigator.push(
-            //   // context,
-            //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
-            // );
-          },
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10,left: 10,),
-            padding: EdgeInsets.all(8),
-            child: Row(
-              children: [
-                SizedBox(width: 10,),
-                Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: 25,
+            SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   // context,
+                //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
+                // );
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 20, left: 60, right: 60),
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Color(0xff34A0A4),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                SizedBox(width: 40),
-                Text(
-                  'Username: ${SpUtil.getString("nama_lengkap")}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Lihat Riwayat Pesanan Anda',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.arrow_right_alt,
+                      color: Colors.white,
+                      size: 38,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
             Container(
-          height: 1,
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(horizontal: 20),
-        ),
- SizedBox(height: 10),
-           GestureDetector(
-          onTap: () {
-            // Navigator.push(
-            //   // context,
-            //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
-            // );
-          },
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10,left: 10,),
-            padding: EdgeInsets.all(8),
-            child: Row(
-              children: [
-                SizedBox(width: 10,),
-                Icon(
-                  Icons.email,
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Informasi Akun',
+                style: TextStyle(
                   color: Colors.white,
-                  size: 25,
+                  fontSize: 16,
                 ),
-                SizedBox(width: 40),
-                Text(
-                  'Email: ${SpUtil.getString("email")}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-         Container(
-          height: 1,
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(horizontal: 20),
-        ),
-          SizedBox(height: 10),
-           GestureDetector(
-          onTap: () {
-            // Navigator.push(
-            //   // context,
-            //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
-            // );
-          },
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10,left: 10,),
-            padding: EdgeInsets.all(8),
-            child: Row(
-              children: [
-                SizedBox(width: 10,),
-                Icon(
-                  Icons.home,
-                  color: Colors.white,
-                  size: 25,
-                ),
-                SizedBox(width: 40),
-                Text(
-                 'Alamat: ${SpUtil.getString("alamat")}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
+            Container(
+              height: 1,
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(horizontal: 20),
             ),
-          ),
-        ),
-         Container(
-          height: 1,
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(horizontal: 20),
-        ),
-        SizedBox(height: 10),
-         GestureDetector(
-          onTap: () {
-            // Navigator.push(
-            //   // context,
-            //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
-            // );
-          },
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10,left: 10,),
-            padding: EdgeInsets.all(8),
-            child: Row(
-              children: [
-                SizedBox(width: 10,),
-                Icon(
-                  Icons.lock,
-                  color: Colors.white,
-                  size: 25,
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   // context,
+                //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
+                // );
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 10, left: 10),
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    SizedBox(width: 40),
+                    Text(
+                      'Username: ${SpUtil.getString("nama_lengkap")}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 40),
-                Text(
-                  ' ********',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-         Container(
-          height: 1,
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(horizontal: 20),
-        ),
-
-          
+            Container(
+              height: 1,
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   // context,
+                //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
+                // );
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 10, left: 10),
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.email,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    SizedBox(width: 40),
+                    Text(
+                      'Email: ${SpUtil.getString("email")}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 1,
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   // context,
+                //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
+                // );
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 10, left: 10),
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.home,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    SizedBox(width: 40),
+                    Text(
+                      'Alamat: ${SpUtil.getString("alamat")}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 1,
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   // context,
+                //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
+                // );
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 10, left: 10),
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.home,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    SizedBox(width: 40),
+                    Text(
+                      'No Hp: ${SpUtil.getString("no_hp")}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 1,
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   // context,
+                //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
+                // );
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 10, left: 10),
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.lock,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    SizedBox(width: 40),
+                    Text(
+                      ' ********',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 1,
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+            ),
           ],
         ),
-        
       ),
-      bottomNavigationBar: HomeBottomBar(),
-    );
-  }
+    ),
+    bottomNavigationBar: HomeBottomBar(),
+  );
+}
+
 }

@@ -86,6 +86,7 @@ class KT_JokiRank extends StatelessWidget {
                   'GameStore Sahabat Para Gamers !\n\n',
                   
                   style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.justify,
                 ),
               ),
             ],

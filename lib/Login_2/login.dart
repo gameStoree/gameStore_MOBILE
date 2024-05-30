@@ -42,19 +42,20 @@ class _loginState extends State<login> {
     try {
       var response = await LoginProvider().PostUser(data);
       EasyLoading.dismiss();
-      if (response.statusCode == 200) {
-         var responseBody = response.body;
+    if (response.statusCode == 200) {
+    var responseBody = response.body;
     var userData = responseBody['user'];
     var userId = userData['id'];
     var email = userData['email'];
     var nama_lengkap = userData['nama_lengkap'];
     var alamat = userData['alamat'];
-    // var foto = userData['foto_user'];
+    var no_hp = userData['no_hp'];
     var token = responseBody['token'];
     SpUtil.putString('email', email);
     SpUtil.putString('nama_lengkap', nama_lengkap);
     SpUtil.putString('token', token);
     SpUtil.putString('alamat', alamat);
+    SpUtil.putString('no_hp', no_hp);
     SpUtil.putInt('id_user', userId);
     // SpUtil.putString('foto_user', foto);
     Get.offAllNamed('/home');

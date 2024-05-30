@@ -10,6 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:project/Ketentuan%20TopUp/ketentuan%20_joki.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
+import 'package:project/widgets/joki.dart';
 import 'package:sp_util/sp_util.dart';
 
 class JasaRank extends StatefulWidget {
@@ -21,8 +22,21 @@ class JasaRank extends StatefulWidget {
 
 class _JasaRankState extends State<JasaRank> {
   late String valueChoose;
-  late Future<List<Datajoki>> _jokiFuture;
-  late int _selectedPaketId = 0;
+  late Future<List<Datajoki>> jokiFuture;
+  late int selectedPaketId = -1;
+  int jumlahBintang = 0;
+  int totalHarga = 0;
+
+  void calculatorTotalHarga() {
+    if (selectedPaketId != -1) {
+      jokiFuture.then((paketList) {
+        Datajoki selectedPaket = paketList.firstWhere((paket) => paket.id_paket == selectedPaketId);
+        setState(() {
+          totalHarga = selectedPaket.harga_joki * jumlahBintang;
+        });
+      });
+    }
+  }
 
   List<String> listItem = ["Pilih Via Login ", "Moonton(Rekomendasi)", "Vk", "Tiktok", "Facebook"];
   TextEditingController idGame = TextEditingController();
@@ -32,28 +46,26 @@ class _JasaRankState extends State<JasaRank> {
   TextEditingController requestHero = TextEditingController();
   TextEditingController catatan = TextEditingController();
   TextEditingController Nohp = TextEditingController();
-
+  TextEditingController jumlah_star =TextEditingController();
+  // TextEditingController totalHarga = TextEditingController();
 
   Future<void> sendOrderData() async {
   EasyLoading.show(status: 'Pesanan anda Diproses');
   int userId = SpUtil.getInt('id_user') ?? 0;
-
   final url = Uri.parse('http://10.0.2.2:8000/api/transactions');
   final Map<String, dynamic> orderData = {
-  // 'id': transactionId,
-  'id_paket': _selectedPaketId.toString(),
+  'id_paket': selectedPaketId.toString(),
   'login_via': valueChoose.toString(),
-  'nickname_ml': idGame.text.toString(),
+  'id_server': idGame.text.toString(),
+  'jumlah_bintang' : jumlah_star.text.toString(),
+  'harga_keseluruhan' : totalHarga.toString(),
   'email_no_hp_montonID': email_moonton.text.toString(),
   'password': password.text.toString(),
   'request_hero': requestHero.text.toString(),
   'catatan_penjoki': catatan.text.toString(),
-  'metode_pembayaran' : 'ipaymu',
-  'bukti_tf' : 'kosong',
   'no_hp': Nohp.text.toString(),
   'status': 'pending',
   'id_user': userId.toString(),
-  // 'id_worker': 1,
 };
   print('Order Data: $orderData');
   try {
@@ -95,19 +107,17 @@ class _JasaRankState extends State<JasaRank> {
   }
 }
 
-
-Future<void> PopupPemesanan(BuildContext context) async {
+  Future<void> PopupPemesanan(BuildContext context) async {
   EasyLoading.show(status: 'Memuat Pemesanan');
-
   String idGames = idGame.text;
-  // String server = servergame.text;
+  String jumlah_bintang = jumlah_star.text;
   String emailMoonton = email_moonton.text;
   String pw = password.text;
   String Hero = requestHero.text;
   String note = catatan.text;
   String phonenumber = Nohp.text;
 
-  if (idGames.isEmpty || valueChoose == 0 || emailMoonton.isEmpty || pw.isEmpty || Hero.isEmpty || note.isEmpty || phonenumber.isEmpty) {
+  if (idGames.isEmpty || valueChoose == 0 || emailMoonton.isEmpty || pw.isEmpty || Hero.isEmpty || note.isEmpty || jumlah_bintang.isEmpty ||phonenumber.isEmpty) {
     EasyLoading.dismiss();
     showDialog(
       context: context,
@@ -129,7 +139,6 @@ Future<void> PopupPemesanan(BuildContext context) async {
     );
     return;
   }
-
   EasyLoading.dismiss();
   showDialog(
     context: context,
@@ -158,11 +167,15 @@ Future<void> PopupPemesanan(BuildContext context) async {
             SizedBox(height: 7),
             Text("Catatan: ${note}", style: TextStyle(fontSize: 16, color: Colors.white)),
             SizedBox(height: 7),
-            Text("Item ID: $_selectedPaketId", style: TextStyle(fontSize: 16, color: Colors.white)),
-            SizedBox(height: 7),
+            Text("Item Paket: $selectedPaketId", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7,),
+            Text("Jumlah Item/Star: ${jumlah_bintang}", style: TextStyle(fontSize: 16, color: Colors.white),),
+            SizedBox(height: 7),  
+            Text('Total Harga: Rp. $totalHarga', style: TextStyle(color: Colors.white, fontSize: 16),),        
+            SizedBox(height: 7),  
             Text("Phone Number: ${phonenumber}", style: TextStyle(fontSize: 16, color: Colors.white)),
             SizedBox(height: 7),
-            Text("Product: Mobile Legend Diamond", style: TextStyle(fontSize: 16, color: Colors.white)),
+            Text("Product: MLBB Joki Rank", style: TextStyle(fontSize: 16, color: Colors.white)),
             SizedBox(height: 7),
             Text("Payment: QRIS (All Payment)", style: TextStyle(fontSize: 16, color: Colors.white)),
             Divider(color: const Color.fromARGB(255, 255, 255, 255)),
@@ -199,11 +212,13 @@ Future<List<Datajoki>> fetchJokirank(String datajoki) async {
   }
 }
 
+
+
   @override
 void initState() {
   super.initState();
   valueChoose = listItem[0];
-  _jokiFuture = fetchJokirank('Joki Rank');
+  jokiFuture = fetchJokirank('Joki Rank');
 }
 
   @override
@@ -227,7 +242,7 @@ void initState() {
         ),
       ),
       body: FutureBuilder<List<Datajoki>>(
-        future: _jokiFuture,
+        future: jokiFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -538,7 +553,7 @@ Terimakasih""",
                   ),
                     SizedBox(height: 9),
                     Text(
-                      'Server',
+                      'Login Via',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -732,65 +747,152 @@ Terimakasih""",
                     ),
                   ),
                 ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: listJoki.length,
-                  itemBuilder: (context, index) {
-                    Datajoki listjokis = listJoki[index];
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedPaketId = listjokis.id_paket;
-                        });
-                      },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: _selectedPaketId == listjokis.id_paket ? Colors.blue : Color(0xff22577A),
-                        borderRadius: BorderRadius.circular(10),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: listJoki.length,
+                    itemBuilder: (context, index) {
+                      Datajoki listjokis = listJoki[index];
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedPaketId = listjokis.id_paket;
+                            calculatorTotalHarga();
+                          });
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: selectedPaketId == listjokis.id_paket ? Colors.blue : Color(0xff22577A),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Id Paket : ${listjokis.id_paket}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                'Nama Paket : ${listjokis.nama_paket}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                'Rank : ${listjokis.joki_rank}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                'Harga : Rp ${listjokis.harga_joki}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+             SizedBox(height: 5),
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                   Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: DropdownButton<int>(
+                            hint: Text('Pilih Paket'),
+                            value: selectedPaketId == -1 ? null : selectedPaketId,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedPaketId = value!;
+                                calculatorTotalHarga();
+                              });
+                            },
+                            items: listJoki.map((paket) {
+                              return DropdownMenuItem<int>(
+                                value: paket.id_paket,
+                                child: Text(paket.nama_paket),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                    Container(
+                            margin: EdgeInsets.only(bottom: 5, left: 15, right: 15),
+                            padding: EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: TextFormField(
+                                controller: jumlah_star,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Jumlah Bintang',
+                                  hintStyle: TextStyle(color: Colors.white54),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(left: 10),
+                                ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                onChanged: (value) {
+                                  setState(() {
+                                    jumlahBintang = int.tryParse(value) ?? 0;
+                                    calculatorTotalHarga();
+                                  });
+                                },
+                              ),
+                            ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Id Paket : ${listjokis.id_paket}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
+                    SizedBox(height: 3),
+                     Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                              Divider(color: Color.fromARGB(255, 0, 91, 116)),
+                                Text(
+                                  'Harga: Rp. ${selectedPaketId != -1 ? listJoki.firstWhere((paket) => paket.id_paket == selectedPaketId).harga_joki : 0}',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  'Total Harga: Rp. $totalHarga',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Divider(color: Color.fromARGB(255, 0, 91, 116)),
+
+                              ],
                             ),
                           ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Nama Paket : ${listjokis.nama_paket}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Rank : ${listjokis.joki_rank}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Harga : ${listjokis.harga_joki}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-                SizedBox(height: 20,),
+                     ],
+                ),
+                 SizedBox(height: 20),
                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -800,7 +902,7 @@ Terimakasih""",
                         children: [
                           Container(
                             margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
-                            padding: EdgeInsets.all(7),
+                            padding: EdgeInsets.all(3),
                             decoration: BoxDecoration(
                               color: Color(0xff22577A),
                               borderRadius: BorderRadius.circular(8),
@@ -859,7 +961,7 @@ Terimakasih""",
                               "Beli Sekarang!",
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Colors.yellow, // Warna teks kuning
+                                color: Colors.yellow,
                               ),
                             ),
                           ],

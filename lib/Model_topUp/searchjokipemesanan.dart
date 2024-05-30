@@ -1,14 +1,14 @@
 class Pemesanan {
   final int id;
   final int? idPaket;
+  final int jumlahbintang;
+  final int hargaKeseluruhan;
   final String? loginVia;
-  final String? nicknameMl;
+  final String? idserver;
   final String? emailNoHpMontonID;
   final String? password;
   final String? requestHero;
   final String? catatanPenjoki;
-  final String? metodePembayaran;
-  final String? buktiTf;
   final String? noHp;
   final String? status;
   final int idUser;
@@ -22,24 +22,24 @@ class Pemesanan {
 
   Pemesanan({
     required this.id,
-     this.idPaket,
+    this.idPaket,
+    required this.jumlahbintang,
+    required this.hargaKeseluruhan,
     this.loginVia,
-    this.nicknameMl,
+    this.idserver,
     this.emailNoHpMontonID,
     this.password,
     this.requestHero,
     this.catatanPenjoki,
-    this.metodePembayaran,
-    this.buktiTf,
     this.noHp,
     this.status,
     required this.idUser,
     this.idWorker,
-     this.namaPaket,
-     this.namaUser,
-     this.namaWorker,
-     this.harga_joki,
-     this.rank_joki,
+    this.namaPaket,
+    this.namaUser,
+    this.namaWorker,
+    this.harga_joki,
+    this.rank_joki,
     this.createtgl,
   });
 
@@ -47,14 +47,14 @@ class Pemesanan {
     return Pemesanan(
       id: json['id'],
       idPaket: json['id_paket'],
+      jumlahbintang: json['jumlah_bintang'],
+      hargaKeseluruhan: json ['harga_keseluruhan'],
       loginVia: json['login_via'],
-      nicknameMl: json['nickname_ml'],
+      idserver: json['id_server'],
       emailNoHpMontonID: json['email_no_hp_montonID'],
       password: json['password'],
       requestHero: json['request_hero'],
       catatanPenjoki: json['catatan_penjoki'],
-      metodePembayaran: json['metode_pembayaran'],
-      buktiTf: json['bukti_tf'],
       noHp: json['no_hp'],
       status: json['status'],
       idUser: json['id_user'],
