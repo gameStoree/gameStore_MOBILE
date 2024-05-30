@@ -45,7 +45,6 @@ Future<void>memuatpesanan(BuildContext context) async {
   final Map<String, dynamic> PesananOrder = {
     'id_server': combinedIdGame,
     'id_diamond': _selectedDiamond.toString(),
-    // 'jumlah_bintang':jumlah_star.toString(),
     'no_hp': noHpText.toString(),
     'status': 'pending',
     'id_user': userId.toString(),

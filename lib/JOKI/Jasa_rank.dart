@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi' hide Size;
-import 'dart:ui';
+// import 'dart:ui';
 
 // import 'dart:math';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -10,7 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:project/Ketentuan%20TopUp/ketentuan%20_joki.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
-import 'package:project/widgets/joki.dart';
+// import 'package:project/widgets/joki.dart';
 import 'package:sp_util/sp_util.dart';
 
 class JasaRank extends StatefulWidget {

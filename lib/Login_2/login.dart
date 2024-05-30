@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:project/Login_2/Login_provider.dart';
 import 'package:project/Login_2/lupaPw.dart';
 import 'package:project/Login_2/register.dart';
+import 'package:project/Model_topUp/model_login.dart';
 import 'package:project/screens/home.dart';
 import 'package:sp_util/sp_util.dart';
 
@@ -24,7 +25,7 @@ class _loginState extends State<login> {
   bool _isObscure = true;
   final _formKey = GlobalKey<FormState>();
 
-  void auth() async {
+ void auth() async {
   String txtemail = email.text;
   String txtpw = password.text;
   if (txtemail.isEmpty || txtpw.isEmpty) {
@@ -33,53 +34,64 @@ class _loginState extends State<login> {
       backgroundColor: Colors.red,
       colorText: Colors.white,
     );
-  } else {
-    EasyLoading.show();
-    var data = {
-      "email": txtemail,
-      "password" : txtpw,
-    };
-    try {
-      var response = await LoginProvider().PostUser(data);
-      EasyLoading.dismiss();
+    return;
+  }
+
+  EasyLoading.show();
+  var data = {
+    "email": txtemail,
+    "password": txtpw,
+  };
+
+  try {
+    var response = await LoginProvider().PostUser(data);
+    EasyLoading.dismiss();
+
     if (response.statusCode == 200) {
-    var responseBody = response.body;
-    var userData = responseBody['user'];
-    var userId = userData['id'];
-    var email = userData['email'];
-    var nama_lengkap = userData['nama_lengkap'];
-    var alamat = userData['alamat'];
-    var no_hp = userData['no_hp'];
-    var token = responseBody['token'];
-    SpUtil.putString('email', email);
-    SpUtil.putString('nama_lengkap', nama_lengkap);
-    SpUtil.putString('token', token);
-    SpUtil.putString('alamat', alamat);
-    SpUtil.putString('no_hp', no_hp);
-    SpUtil.putInt('id_user', userId);
-    // SpUtil.putString('foto_user', foto);
-    Get.offAllNamed('/home');
-        Get.snackbar(
-          "Success", "Login berhasil",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+      String? responseBodyString = response.bodyString;
+      if (responseBodyString != null) {
+        var responseBody = json.decode(responseBodyString);
+        if (responseBody is Map<String, dynamic>) {
+          var userData = LoginCust.fromJson(responseBody['user']);
+          var token = responseBody['token'];
+          SpUtil.putInt('id_user', userData.id);
+          SpUtil.putString('email', userData.email);
+          SpUtil.putString('nama_lengkap', userData.nama_lengkap);
+          SpUtil.putString('token', token);
+          SpUtil.putString('alamat', userData.alamat);
+          SpUtil.putString('no_hp', userData.no_hp);
+          if (userData.foto_user != null) {
+            SpUtil.putString('foto_user', userData.foto_user!);
+          } else {
+            SpUtil.putString('foto_user', '');
+          }
+          Get.offAllNamed('/home');
+          Get.snackbar(
+            "Success", "Login berhasil",
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+        } else {
+          throw Exception("Invalid response format");
+        }
       } else {
-        Get.snackbar(
-          "Error", "Login Gagal",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        throw Exception("Response body is null");
       }
-    } catch (e) {
-      EasyLoading.dismiss();
-      print(e);
+    } else {
       Get.snackbar(
-        "Error", "Terjadi kesalahan",
+        "Error", "Login Gagal",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
+  } catch (e) {
+    EasyLoading.dismiss();
+    print(e);
+    Get.snackbar(
+      "Error", "Terjadi kesalahan: $e",
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
 }
 

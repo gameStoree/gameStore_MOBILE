@@ -5,12 +5,12 @@ class JasaMontage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( 
-        title: Text('Halaman Jasa Vidio Montage'), // Judul halaman
+        title: Text('Halaman Jasa Vidio Montage'),
       ),
       body: Center(
         child: Container(
           child: Text(
-            'Montage', 
+            'Montage',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
