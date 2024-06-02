@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:project/Form%20Pemesanan/pemesananDiamond.dart';
 import 'package:project/Ketentuan%20TopUp/Ketentuan_topup.dart';
 import 'package:project/Model_topUp/Diamond_model.dart';
 import 'package:project/widgets/home_buttom.dart';
@@ -22,74 +23,108 @@ class _MLScreenState extends State<MlScreen> {
   TextEditingController servergame = TextEditingController();
   TextEditingController noHp = TextEditingController();
 
-  late int _selectedDiamond = 0;
+  late int _selectedDiamond = -1;
   late Future<List<Diamond>> _diamondsFuture;
   String result = '';
+  int totalHarga = 0;
 
-Future<void>memuatpesanan(BuildContext context) async {
-  EasyLoading.show(status: 'Pesanan anda Diproses');
-  int userId = SpUtil.getInt('id_user') ?? 0;
-  String idGameText = idGame.text;
-  String serverGameText = servergame.text;
-  String noHpText = noHp.text;
-
-  if (idGameText.isEmpty ||
-      serverGameText.isEmpty || _selectedDiamond == 0 || noHpText.isEmpty) {
-    EasyLoading.dismiss();
-    print('Mohon lengkapi semua field sebelum melakukan pemesanan.');
-    return;
+  void totalHargadiamond() {
+  if (_selectedDiamond != -1) {
+    _diamondsFuture.then((diamondList) {
+      Diamond selectedDiamond = diamondList.firstWhere((diamond) => diamond.id == _selectedDiamond);
+      setState(() {
+        totalHarga = selectedDiamond.hargaDiamond;
+      });
+    });
   }
-  String combinedIdGame = '$idGameText $serverGameText';
-  print("Nilai combinedIdGame: $combinedIdGame");
-  final url = Uri.parse('http://10.0.2.2:8000/api/pemesanan-diamond');
-  final Map<String, dynamic> PesananOrder = {
-    'id_server': combinedIdGame,
-    'id_diamond': _selectedDiamond.toString(),
-    'no_hp': noHpText.toString(),
-    'status': 'pending',
-    'id_user': userId.toString(),
-  };
-  print('pemesanan : $PesananOrder');
-  try {
-    final response = await http.post(
-      url,
-      body: PesananOrder,
-    );
-    print('Response status code: ${response.statusCode}');
-    EasyLoading.dismiss();
-    if (response.statusCode == 201) {
-      final responseData = json.decode(response.body);
-      final orderId = responseData['id'];
-      print('Transaction stored successfully with ID: $orderId');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Pemesanan berhasil disimpan dengan ID: $orderId'),
-          backgroundColor: Colors.green,
-        ),
+}
+
+Future<void> memuatpesanan(BuildContext context) async {
+    EasyLoading.show(status: 'Pesanan anda Diproses');
+    int? userId = await SpUtil.getInt('id_user');
+    String idGameText = idGame.text;
+    String serverGameText = servergame.text;
+    String noHpText = noHp.text;
+
+    if (idGameText.isEmpty || serverGameText.isEmpty || _selectedDiamond == 0 || noHpText.isEmpty) {
+      EasyLoading.dismiss();
+      print('Mohon lengkapi semua field sebelum melakukan pemesanan.');
+      return;
+    }
+    String combinedIdGame = '$idGameText $serverGameText';
+    print("Nilai combinedIdGame: $combinedIdGame");
+    final url = Uri.parse('http://10.0.2.2:8000/api/pemesanan-diamond');
+    final Map<String, dynamic> PesananOrder = {
+      'id_server': combinedIdGame,
+      'id_diamond': _selectedDiamond.toString(),
+      'no_hp': noHpText.toString(),
+      'harga_keseluruhan': totalHarga.toString(),
+      'status': 'unpaid',
+      'id_user': userId.toString(),
+    };
+    print('pemesanan : $PesananOrder');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(PesananOrder),
       );
-      Navigator.of(context).pop();
-    } else {
-      print('Failed to store transaction');
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      EasyLoading.dismiss();
+
+      if (response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        print('Response data: $responseData');
+        final latestOrderUrl = Uri.parse('http://10.0.2.2:8000/api/pemesanan-dm-terbaru/$userId');
+        final latestOrderResponse = await http.get(latestOrderUrl);
+        print('Latest order response status code: ${latestOrderResponse.statusCode}');
+        print('Latest order response body: ${latestOrderResponse.body}');
+        if (latestOrderResponse.statusCode == 200) {
+          final latestOrderData = json.decode(latestOrderResponse.body);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Pemesanan berhasil disimpan.'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => OrderDiamondPage(orderData: latestOrderData),
+            ),
+          );
+        } else {
+          print('Failed to fetch latest order data: ${latestOrderResponse.statusCode}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Gagal mendapatkan data pemesanan terbaru.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        print('Failed to store transaction');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal menyimpan pemesanan'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (error) {
+      EasyLoading.dismiss();
+      print('Error: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal menyimpan pemesanan'),
+          content: Text('Terjadi kesalahan saat memuat pemesanan: $error'),
           backgroundColor: Colors.red,
         ),
       );
     }
-  } catch (error) {
-    EasyLoading.dismiss();
-    print('Error: $error');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Terjadi kesalahan saat memuat pemesanan'),
-        backgroundColor: Colors.red,
-      ),
-    );
   }
-}
-
-
 
 
     //====== Logic Search Id Game Mobile legend ======//
@@ -98,7 +133,7 @@ Future<void> searchIdGame() async {
   String server = servergame.text;
   String phonenumber = noHp.text;
   
-  if (idMl.isEmpty || server.isEmpty || phonenumber.isEmpty || _selectedDiamond == 0) {
+  if (idMl.isEmpty || server.isEmpty || phonenumber.isEmpty || _selectedDiamond == -1) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -136,6 +171,8 @@ Future<void> searchIdGame() async {
       result = 'ID:  $id\nServer:  $zoneId\nNickname: $name';
     });
 
+    totalHargadiamond();
+    await Future.delayed(Duration(milliseconds: 500));
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -150,10 +187,9 @@ Future<void> searchIdGame() async {
               Divider(color: const Color.fromARGB(255, 255, 255, 255)),
               Text(result, style: TextStyle(fontSize: 16, color: Colors.white)),
               Text("Item ID:  $_selectedDiamond", style: TextStyle(fontSize: 16, color: Colors.white)),
-              // Text("Jumlah Item : ${jumlah_star}", style: TextStyle(fontSize: 16, color: Colors.white),),
+              Text("Total Harga: Rp $totalHarga", style: TextStyle(fontSize: 16, color: Colors.white)),
               Text("Phone Number: ${noHp.text}", style: TextStyle(fontSize: 16, color: Colors.white)),
-              Text("Product :   Mobile Legend Diamond", style: TextStyle(fontSize: 16, color: Colors.white)),
-              // Text("Payment :   QRIS (All Payment)", style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text("Product: Mobile Legend Diamond", style: TextStyle(fontSize: 16, color: Colors.white)),
               Divider(color: const Color.fromARGB(255, 255, 255, 255)),
             ],
           ),
@@ -164,10 +200,10 @@ Future<void> searchIdGame() async {
               },
               child: Text("Batalkan", style: TextStyle(color: Colors.red, fontSize: 18)),
             ),
-           TextButton(
-                onPressed: () {
-                  memuatpesanan(context);
-                },
+            TextButton(
+              onPressed: () {
+                memuatpesanan(context);
+              },
               child: Text("Pesan Sekarang!", style: TextStyle(color: Colors.yellow, fontSize: 18)),
             ),
           ],
@@ -175,14 +211,12 @@ Future<void> searchIdGame() async {
       },
     );
   } else {
-    // Menampilkan snackbar untuk memberi tahu pengguna bahwa ID game dan server tidak ditemukan
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('ID game dan server tidak ditemukan.'),
         backgroundColor: Colors.red,
       ),
     );
-    // Menyembunyikan loading indicator
     EasyLoading.dismiss();
     print('Failed to load data: ${response.statusCode}');
   }
@@ -191,17 +225,16 @@ Future<void> searchIdGame() async {
 
 
     //======= logic api get data diamond =======//
-Future<List<Diamond>> fetchDiamonds(String gameName) async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/api/diamonds/Mobile Legend'));
 
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body)['data'];
-      return data.map((json) => Diamond.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load diamonds');
-    }
+Future<List<Diamond>> fetchDiamonds(String gameName) async {
+  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/diamonds/$gameName'));
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(response.body)['data'];
+    return data.map((json) => Diamond.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load diamonds');
   }
+}
 
   @override  
    void initState() {
@@ -230,18 +263,17 @@ Future<List<Diamond>> fetchDiamonds(String gameName) async {
           },
         ),
       ),
-      // batas body dengan widget 
      body: _diamondsFuture == null
-          ? Center(child: CircularProgressIndicator())
-          : FutureBuilder<List<Diamond>>(
-              future: _diamondsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  List<Diamond> diamonds = snapshot.data!;
+        ? Center(child: CircularProgressIndicator())
+        : FutureBuilder<List<Diamond>>(
+            future: _diamondsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                List<Diamond> diamonds = snapshot.data!;
             return ListView(
               children: [
                 Container(
@@ -670,4 +702,5 @@ Future<List<Diamond>> fetchDiamonds(String gameName) async {
     );
   
   }
+  
 }

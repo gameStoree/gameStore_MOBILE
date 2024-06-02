@@ -29,7 +29,7 @@ class _JasaRankState extends State<JasaRank> {
 
   void calculatorTotalHarga() {
     if (selectedPaketId != -1) {
-      jokiFuture.then((paketList) {
+      jokiFuture.then( (paketList) {
         Datajoki selectedPaket = paketList.firstWhere((paket) => paket.id_paket == selectedPaketId);
         setState(() {
           totalHarga = selectedPaket.harga_joki * jumlahBintang;
