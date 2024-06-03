@@ -277,11 +277,11 @@ Future<List<Diamond>> fetchDiamonds(String gameName) async {
             return ListView(
               children: [
                 Container(
-                  height: 200, 
-                  width: double.infinity, 
+                  height: 200,
+                  width: double.infinity,
                   color: Colors.blue,
                   child: Image.asset(
-                    'images/wl_topup_ml.png', 
+                    'images/wl_topup_ml.png',
                     fit: BoxFit.cover, 
                   ),
                 ),
@@ -302,32 +302,32 @@ Future<List<Diamond>> fetchDiamonds(String gameName) async {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Mobile Legend Bang Bang', 
+                              'Mobile Legend Bang Bang',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white, 
+                                color: Colors.white,
                               ),
                             ),
-                            SizedBox(height: 1), 
+                            SizedBox(height: 1),
                             Text(
-                              'Montoon', 
+                              'Montoon',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.white, 
+                                color: Colors.white,
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 10), 
+                              padding: EdgeInsets.only(top: 10),
                               child: Row(
                                 children: <Widget>[
                                   Icon(
                                     Icons.check_circle,
-                                    color: Colors.green, 
+                                    color: Colors.green,
                                   ),
-                                  SizedBox(width: 10), 
+                                  SizedBox(width: 10),
                                   Text(
-                                    'Terverifikasi', 
+                                    'Terverifikasi',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.white, 
@@ -680,7 +680,7 @@ Future<List<Diamond>> fetchDiamonds(String gameName) async {
                   color: Colors.yellow,),
                   SizedBox(width: 7),
                   Text(
-                    "Beli Sekarang!",
+                    "Pesan Sekarang!",
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.yellow, // Warna teks kuning

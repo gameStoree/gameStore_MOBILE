@@ -1,4 +1,5 @@
-import 'package:project/Model_topUp/Joki_rank.dart';
+// import 'package:project/Model_topUp/Joki_rank.dart';
+
 class ModelCalculate {
   static String calculateTotalPrice(String jumlahItem, String hargaJoki) {
     if (jumlahItem.isEmpty || hargaJoki.isEmpty) {

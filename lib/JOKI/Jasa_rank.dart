@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
+import 'package:project/Form%20Pemesanan/pemesananJoki.dart';
 import 'package:project/Ketentuan%20TopUp/ketentuan%20_joki.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
 // import 'package:project/widgets/joki.dart';
@@ -47,44 +48,59 @@ class _JasaRankState extends State<JasaRank> {
   TextEditingController catatan = TextEditingController();
   TextEditingController Nohp = TextEditingController();
   TextEditingController jumlah_star =TextEditingController();
-  // TextEditingController totalHarga = TextEditingController();
 
   Future<void> sendOrderData() async {
   EasyLoading.show(status: 'Pesanan anda Diproses');
-  int userId = SpUtil.getInt('id_user') ?? 0;
+  int? userId = await SpUtil.getInt('id_user');
   final url = Uri.parse('http://10.0.2.2:8000/api/transactions');
   final Map<String, dynamic> orderData = {
-  'id_paket': selectedPaketId.toString(),
-  'login_via': valueChoose.toString(),
-  'id_server': idGame.text.toString(),
-  'jumlah_bintang' : jumlah_star.text.toString(),
-  'harga_keseluruhan' : totalHarga.toString(),
-  'email_no_hp_montonID': email_moonton.text.toString(),
-  'password': password.text.toString(),
-  'request_hero': requestHero.text.toString(),
-  'catatan_penjoki': catatan.text.toString(),
-  'no_hp': Nohp.text.toString(),
-  'status': 'pending',
-  'id_user': userId.toString(),
-};
+    'id_paket': selectedPaketId.toString(),
+    'login_via': valueChoose.toString(),
+    'id_server': idGame.text.toString(),
+    'jumlah_bintang': jumlah_star.text.toString(),
+    'harga_keseluruhan': totalHarga.toString(),
+    'email_no_hp_montonID': email_moonton.text.toString(),
+    'password': password.text.toString(),
+    'request_hero': requestHero.text.toString(),
+    'catatan_penjoki': catatan.text.toString(),
+    'no_hp': Nohp.text.toString(),
+    'status': 'pending',
+    'id_user': userId.toString(),
+  };
   print('Order Data: $orderData');
+  
   try {
     final response = await http.post(
       url,
       body: orderData,
     );
-     print('Response status code: ${response.statusCode}');
+    print('Response status code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
     EasyLoading.dismiss();
+    
     if (response.statusCode == 201) {
+      final responseData = json.decode(response.body);
+      print('Response data: $responseData');
+      final Urllastorder = Uri.parse('http://10.0.2.2:8000/api/pemesanan-jk-terbaru/$userId');
+      final latestOrderResponse = await http.get(Urllastorder);
+      print('Order Last Response status code: ${latestOrderResponse.statusCode}');
+      print('Latest order response body: ${latestOrderResponse.body}');
+      
+      if (latestOrderResponse.statusCode == 200) {
+        final latestOrderData = json.decode(latestOrderResponse.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Pemesanan berhasil disimpan'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => OrderJokiPage(orderData: latestOrderData),
+          ),
+        );
+      }
       print('Transaction stored successfully');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Pemesanan berhasil disimpan'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      Navigator.of(context).pop();
     } else {
       print('Failed to store transaction');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -95,9 +111,8 @@ class _JasaRankState extends State<JasaRank> {
       );
     }
   } catch (error) {
-     EasyLoading.dismiss();
+    EasyLoading.dismiss();
     print('Error: $error');
-    // Menampilkan snackbar jika terjadi kesalahan saat melakukan pemesanan
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Terjadi kesalahan saat memuat pemesanan'),
@@ -155,7 +170,9 @@ class _JasaRankState extends State<JasaRank> {
               style: TextStyle(color: Colors.white),
             ),
             Divider(color: const Color.fromARGB(255, 255, 255, 255)),
-            Text("Login: ${valueChoose}", style: TextStyle(fontSize: 16, color: Colors.white)),
+            Text("Product: MLBB Joki Rank", style: TextStyle(fontSize: 16, color: Colors.white)),
+            SizedBox(height: 7),
+            Text("Via Login: ${valueChoose}", style: TextStyle(fontSize: 16, color: Colors.white)),
             SizedBox(height: 7),
             Text("IdGame: ${idGames}", style: TextStyle(fontSize: 16, color: Colors.white)),
             SizedBox(height: 7),
@@ -174,10 +191,6 @@ class _JasaRankState extends State<JasaRank> {
             Text('Total Harga: Rp. $totalHarga', style: TextStyle(color: Colors.white, fontSize: 16),),        
             SizedBox(height: 7),  
             Text("Phone Number: ${phonenumber}", style: TextStyle(fontSize: 16, color: Colors.white)),
-            SizedBox(height: 7),
-            Text("Product: MLBB Joki Rank", style: TextStyle(fontSize: 16, color: Colors.white)),
-            SizedBox(height: 7),
-            Text("Payment: QRIS (All Payment)", style: TextStyle(fontSize: 16, color: Colors.white)),
             Divider(color: const Color.fromARGB(255, 255, 255, 255)),
           ],
         ),
@@ -958,7 +971,7 @@ Terimakasih""",
                             color: Colors.yellow,),
                             SizedBox(width: 7),
                             Text(
-                              "Beli Sekarang!",
+                              "Pesan Sekarang!",
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.yellow,

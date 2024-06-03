@@ -25,9 +25,6 @@ class ValoScreen extends StatelessWidget {
           },
         ),
       ),
-
-      // batas body dengan widget 
-
       body: ListView( 
         children: <Widget>[
           

@@ -38,7 +38,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
             colors: [
               Color.fromARGB(255, 161, 160, 139),
               const Color.fromARGB(255, 64, 59, 74)
-            ], // Ganti warna sesuai keinginan
+            ],
           ),
         ),
         child: Center(
@@ -67,10 +67,10 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                 SizedBox(height: 3,),
                 Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 61, 74, 87), // Ganti warna sesuai keinginan
-                    borderRadius: BorderRadius.circular(10.0), // Sesuaikan radius sesuai kebutuhan
+                    color: Color.fromARGB(255, 61, 74, 87),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  padding: EdgeInsets.all(8.0), // Sesuaikan padding sesuai kebutuhan
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     "${widget.order.id}",
                     textAlign: TextAlign.center,
@@ -88,7 +88,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                   width: 365,
                   margin: EdgeInsets.symmetric(vertical: 10.0),
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 0.7), // Putih dengan tingkat transparansi 0.5
+                    color: Color.fromRGBO(255, 255, 255, 0.7),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   padding: EdgeInsets.all(16.0),

@@ -8,7 +8,6 @@ class OrderDiamondPage extends StatefulWidget {
   @override
   State<OrderDiamondPage> createState() => _OrderDiamondPageState();
 }
-
 class _OrderDiamondPageState extends State<OrderDiamondPage> {
   @override
   Widget build(BuildContext context) {
@@ -155,7 +154,7 @@ class _OrderDiamondPageState extends State<OrderDiamondPage> {
                       Text("No Hp : ${orderData['no_hp']}"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
-                      SizedBox(height: 10.0), 
+                      SizedBox(height: 10.0),
                       Text(
                         'Id Diamond Order',
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
@@ -171,7 +170,8 @@ class _OrderDiamondPageState extends State<OrderDiamondPage> {
               margin: EdgeInsets.symmetric(horizontal: 22),
               child: ElevatedButton(
               onPressed: () {
-               
+
+
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 50),
@@ -198,8 +198,8 @@ class _OrderDiamondPageState extends State<OrderDiamondPage> {
               ),
             ),
           ),
-          SizedBox(height: 40),
-        ],
+           SizedBox(height: 40),
+           ],
           ),
         ),
        ),
