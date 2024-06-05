@@ -18,12 +18,10 @@ class _FFScreenState extends State<FFScreen> {
   TextEditingController idGame = TextEditingController();
   TextEditingController noHp = TextEditingController();
 
-   String? selectedMethod;
-
+  String? selectedMethod;
 
   late Future<List<Diamond>> _diamondsFuture;
   int _selectedIndex = -1;
-  
 
   @override
   void initState() {
@@ -32,8 +30,8 @@ class _FFScreenState extends State<FFScreen> {
   }
 
   Future<List<Diamond>> fetchDiamonds(String gameName) async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/api/diamonds/Free Fire'));
+    final response = await http
+        .get(Uri.parse('http://10.0.2.2:8000/api/diamonds/Free Fire'));
 
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];
@@ -55,7 +53,6 @@ class _FFScreenState extends State<FFScreen> {
             fontSize: 17,
           ),
         ),
-        
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
@@ -63,7 +60,6 @@ class _FFScreenState extends State<FFScreen> {
             Navigator.pop(context);
           },
         ),
-        
       ),
       // SizedBox(width: 7),
       body: FutureBuilder<List<Diamond>>(
@@ -77,15 +73,13 @@ class _FFScreenState extends State<FFScreen> {
             List<Diamond> diamonds = snapshot.data!;
             return ListView(
               children: [
-                
-  
                 Container(
-                  height: 200, 
-                  width: double.infinity, 
+                  height: 200,
+                  width: double.infinity,
                   color: Colors.blue,
                   child: Image.asset(
-                    'images/Screen_FFTP.png', 
-                    fit: BoxFit.cover, 
+                    'images/Screen_FFTP.png',
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Container(
@@ -96,44 +90,44 @@ class _FFScreenState extends State<FFScreen> {
                     children: <Widget>[
                       Image.asset(
                         'images/Label_ff.png',
-                        width: 80, 
+                        width: 80,
                         height: 80,
                       ),
-                      SizedBox(width: 16), 
+                      SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Free Fire', 
+                              'Free Fire',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white, 
+                                color: Colors.white,
                               ),
                             ),
-                            SizedBox(height: 1), 
+                            SizedBox(height: 1),
                             Text(
-                              'Garena', 
+                              'Garena',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.white, 
+                                color: Colors.white,
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 10), 
+                              padding: EdgeInsets.only(top: 10),
                               child: Row(
                                 children: <Widget>[
                                   Icon(
                                     Icons.check_circle,
-                                    color: Colors.green, 
+                                    color: Colors.green,
                                   ),
-                                  SizedBox(width: 10), 
+                                  SizedBox(width: 10),
                                   Text(
-                                    'Terverifikasi', 
+                                    'Terverifikasi',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.white, 
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
@@ -146,12 +140,13 @@ class _FFScreenState extends State<FFScreen> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(bottom: 8, top: 10, left: 15, right: 15), 
+                  margin:
+                      EdgeInsets.only(bottom: 8, top: 10, left: 15, right: 15),
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Color(0xff22577A),
-                    border: Border.all(color: Color(0xffC7F9CC)), 
-                    borderRadius: BorderRadius.circular(10), 
+                    border: Border.all(color: Color(0xffC7F9CC)),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,9 +157,9 @@ class _FFScreenState extends State<FFScreen> {
                             Icons.security,
                             color: Color(0xff80ED99),
                           ),
-                          SizedBox(width: 8), 
+                          SizedBox(width: 8),
                           Text(
-                            'Jaminan Layanan', 
+                            'Jaminan Layanan',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -180,9 +175,9 @@ class _FFScreenState extends State<FFScreen> {
                             Icons.phone,
                             color: Color(0xff80ED99),
                           ),
-                          SizedBox(width: 8), 
+                          SizedBox(width: 8),
                           Text(
-                            'Jaminan Layanan 24 Jam', 
+                            'Jaminan Layanan 24 Jam',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,
@@ -197,9 +192,9 @@ class _FFScreenState extends State<FFScreen> {
                             Icons.credit_card,
                             color: Color(0xff80ED99),
                           ),
-                          SizedBox(width: 8), 
+                          SizedBox(width: 8),
                           Text(
-                            'Pembayaran Aman & Terpercaya', 
+                            'Pembayaran Aman & Terpercaya',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,
@@ -214,9 +209,9 @@ class _FFScreenState extends State<FFScreen> {
                             Icons.flash_on,
                             color: Color(0xff80ED99),
                           ),
-                          SizedBox(width: 8), 
+                          SizedBox(width: 8),
                           Text(
-                            'Proses Cepat & Otomatis', 
+                            'Proses Cepat & Otomatis',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,
@@ -235,7 +230,7 @@ class _FFScreenState extends State<FFScreen> {
                     );
                   },
                   child: Container(
-                    margin: EdgeInsets.only(bottom: 8, left: 15, right: 15), 
+                    margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Color(0xff22577A),
@@ -244,7 +239,7 @@ class _FFScreenState extends State<FFScreen> {
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children:  [
+                      children: [
                         Text(
                           'Lihat Cara Transaksi Disini',
                           style: TextStyle(
@@ -260,7 +255,7 @@ class _FFScreenState extends State<FFScreen> {
                     ),
                   ),
                 ),
-                Column( 
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
@@ -280,8 +275,8 @@ class _FFScreenState extends State<FFScreen> {
                               color: Colors.white,
                               fontSize: 18,
                             ),
-                          ), 
-                          SizedBox(height: 15), 
+                          ),
+                          SizedBox(height: 15),
                           Text(
                             'ID Game',
                             style: TextStyle(
@@ -289,7 +284,7 @@ class _FFScreenState extends State<FFScreen> {
                               fontSize: 14,
                             ),
                           ),
-                          SizedBox(height: 9),  
+                          SizedBox(height: 9),
                           Container(
                             margin: EdgeInsets.only(bottom: 10),
                             padding: EdgeInsets.symmetric(horizontal: 10),
@@ -334,16 +329,18 @@ class _FFScreenState extends State<FFScreen> {
                             });
                           },
                           child: Container(
-                            margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
+                            margin:
+                                EdgeInsets.only(bottom: 8, left: 15, right: 15),
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: _selectedIndex == index ? Colors.blue : Color(0xff22577A),
+                              color: _selectedIndex == index
+                                  ? Colors.blue
+                                  : Color(0xff22577A),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                               
                                 SizedBox(height: 5),
                                 Text(
                                   '${diamond.jumlahDiamond}',
@@ -369,87 +366,97 @@ class _FFScreenState extends State<FFScreen> {
                   ],
                 ),
                 SizedBox(height: 20),
-               
-              Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
-                  padding: EdgeInsets.all(7),
-                  decoration: BoxDecoration(
-                    color: Color(0xff22577A),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: Padding(
-                   padding: const EdgeInsets.all(2.0),
-                  child: TextFormField(
-                    controller: noHp,
-                    style: TextStyle(color: Colors.white,
-                    fontSize: 18,
-                    ),    
-                   decoration: InputDecoration(
-                      hintText: 'Masukan Nomer Hp Anda',
-                      hintStyle: TextStyle(color: Colors.white54),
-                       border: InputBorder.none,
-                      // border: OutlineInputBorder(
-                      //   borderSide: BorderSide(color: Colors.white),
-                      //   borderRadius: BorderRadius.circular(5),
-                      // ),
-                      contentPadding: EdgeInsets.only(left: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                                bottom: 10, left: 15, right: 15),
+                            padding: EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: TextFormField(
+                                controller: noHp,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Masukan Nomer Hp Anda',
+                                  hintStyle: TextStyle(color: Colors.white54),
+                                  border: InputBorder.none,
+                                  // border: OutlineInputBorder(
+                                  //   borderSide: BorderSide(color: Colors.white),
+                                  //   borderRadius: BorderRadius.circular(5),
+                                  // ),
+                                  contentPadding: EdgeInsets.only(left: 10),
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Harap masukkan Hp Anda';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Harap masukkan Hp Anda';
-                      }
-                      return null;
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Tambahkan logika fungsi tombol di sini
                     },
-                  ),
-                ),
-                ),
-              ],
-            ),
-              ),
-              ],
-              ),
-                SizedBox(height: 20,),
-                Container(
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              child: ElevatedButton(
-              onPressed: () {
-                // Tambahkan logika fungsi tombol di sini
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Color(0xff22577A),
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.shopping_cart,
-                  color: Colors.yellow,),
-                  SizedBox(width: 7),
-                  Text(
-                    "Beli Sekarang!",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.yellow, // Warna teks kuning
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: Color(0xff22577A),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.shopping_cart,
+                          color: Colors.yellow,
+                        ),
+                        SizedBox(width: 7),
+                        Text(
+                          "Beli Sekarang!",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.yellow, // Warna teks kuning
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-                   SizedBox(height: 30,),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
               ],
             );
           } else {

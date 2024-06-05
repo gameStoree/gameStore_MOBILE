@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:project/Mvm/searchjokipemesanan.dart';
+import 'package:project/Mvm/searchDiamond.dart';
 
-class OrderDetailWidget extends StatefulWidget {
-  final Pemesanan order;
-  final Paket paket;
+class OrderDiamondDetail extends StatefulWidget {
+  final Pemesanandiamond order;
 
-  const OrderDetailWidget({Key? key, required this.order, required this.paket})
-      : super(key: key);
+  const OrderDiamondDetail({super.key, required this.order});
 
   @override
-  _OrderDetailWidgetState createState() => _OrderDetailWidgetState();
+  State<OrderDiamondDetail> createState() => _OrderDiamondDetailState();
 }
 
-class _OrderDetailWidgetState extends State<OrderDetailWidget> {
+class _OrderDiamondDetailState extends State<OrderDiamondDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,13 +145,13 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                       ),
                       SizedBox(height: 2.0),
                       Text(
-                        "Nama Paket: ${widget.paket.namaPaket}, ${widget.paket.jokiRank}",
+                        "Nama Game: ${widget.order.namaGame}",
                       ),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
                       Text(
-                        'Item Dibeli',
+                        'Id Server',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -161,7 +159,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                         ),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Jumlah: ${widget.order.jumlahBintang}"),
+                      Text(" ${widget.order.idServer}"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
@@ -179,7 +177,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
                       Text(
-                        'Tanggal Pemesanan',
+                        'Jumlah Diamond',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -188,13 +186,13 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                       ),
                       SizedBox(height: 2.0),
                       Text(
-                        "${widget.order.createdAt?.substring(0, 20)}",
+                        " ${widget.order.jumlahDiamond}",
                       ),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
                       Text(
-                        'Harga Perpaket',
+                        'Harga Diamond',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -202,7 +200,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                         ),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Rp: ${widget.paket.hargaJoki}"),
+                      Text("Rp: ${widget.order.hargaDiamond}"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
@@ -217,119 +215,34 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                       SizedBox(height: 2.0),
                       Text("Rp: ${widget.order.hargaKeseluruhan}"),
                       SizedBox(height: 10.0),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15),
-                Container(
-                  width: 365,
-                  margin: EdgeInsets.symmetric(vertical: 10.0),
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 0.7),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Informasi Akun',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
                       Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
+                      SizedBox(height: 10.0),
                       Text(
-                        'Login Via',
+                        'No Hanphone',
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 2.0),
-                      Text("${widget.order.loginVia}"),
-                      SizedBox(height: 8.0),
+                      Text(" ${widget.order.noHp}"),
+                      SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
+                      SizedBox(height: 10.0),
                       Text(
-                        'User ID & NickName',
+                        'Tanggal pemesanan',
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 2.0),
-                      Text("${widget.order.idServer}"),
-                      SizedBox(height: 8.0),
+                      Text(" ${widget.order.createdAt}"),
+                      SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'Email',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.emailNoHpMontonID}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'Password',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.password}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'Request Hero',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.requestHero}"),
-                      SizedBox(height: 8.0),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'Catatan Untuk Pejoki',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.catatanPenjoki}"),
-                      SizedBox(height: 16.0),
-                      Text(
-                        'Worker Id',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.idWorker ?? '---'}"),
-                      SizedBox(height: 16.0),
+                      SizedBox(height: 10.0),
                       SizedBox(
                         width: double.infinity,
                         child: GestureDetector(
@@ -365,7 +278,7 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                     ],
                   ),
                 ),
-                // SizedBox(height: 10),
+                SizedBox(height: 15),
                 SizedBox(height: 25),
               ],
             ),

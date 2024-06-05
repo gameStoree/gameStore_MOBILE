@@ -71,39 +71,41 @@ class ItemsWidget extends StatelessWidget {
 
   void navigateToPage(BuildContext context, String imgName) {
     if (imgName == 'topup Aov') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => AovTopup()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => AovTopup()));
     } else if (imgName == 'topup coc') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CocTopUp()));
-    } else if (imgName == 'wanwan'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MlScreen()));
-    }else if (imgName == 'topup pubg'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => PubgScreen()));
-    }
-    else if (imgName == 'topupepep'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => FFScreen()));
-    }
-    else if (imgName == 'topup cr'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CrScreen()));
-    }
-    else if (imgName == 'topup gensin'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => GenshinScreen()));
-    }
-    else if (imgName == 'topup valo'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ValoScreen()));
-    }
-    else if (imgName == 'topup fortnite'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => forntniteScreen()));
-    }
-    else if (imgName == 'topup hongkai'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HongkaiScreen()));
-    }
-    else if (imgName == 'newstate'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => NewstateScreen()));
-    }
-    else if (imgName == 'topup cod'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CodScreen()));
-    } else {
-
-    }
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CocTopUp()));
+    } else if (imgName == 'wanwan') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MlScreen()));
+    } else if (imgName == 'topup pubg') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => PubgScreen()));
+    } else if (imgName == 'topupepep') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => FFScreen()));
+    } else if (imgName == 'topup cr') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CrScreen()));
+    } else if (imgName == 'topup gensin') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => GenshinScreen()));
+    } else if (imgName == 'topup valo') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ValoScreen()));
+    } else if (imgName == 'topup fortnite') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => forntniteScreen()));
+    } else if (imgName == 'topup hongkai') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HongkaiScreen()));
+    } else if (imgName == 'newstate') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => NewstateScreen()));
+    } else if (imgName == 'topup cod') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CodScreen()));
+    } else {}
   }
 }

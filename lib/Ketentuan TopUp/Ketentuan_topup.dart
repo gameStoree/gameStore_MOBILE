@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-
-
-class Ketentuan extends StatelessWidget{
- @override
+class Ketentuan extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -24,9 +22,9 @@ class Ketentuan extends StatelessWidget{
           SizedBox(height: 16),
           KT_freefire(),
           SizedBox(height: 16),
-          KT_Coc(), 
+          KT_Coc(),
           SizedBox(height: 16),
-          KT_Ml(), 
+          KT_Ml(),
           SizedBox(height: 16),
           KT_Fortnite(),
           SizedBox(height: 16),
@@ -45,11 +43,6 @@ class Ketentuan extends StatelessWidget{
           KT_Valo(),
           SizedBox(height: 16),
           KT_rolaye(),
-
-
-
-
-          
         ],
       ),
     );
@@ -150,7 +143,6 @@ class KT_Codm extends StatelessWidget {
   }
 }
 
-
 class KT_rolaye extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -197,11 +189,10 @@ class KT_rolaye extends StatelessWidget {
   }
 }
 
-
 //
 class KT_Valo extends StatelessWidget {
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff22577A),
@@ -383,10 +374,9 @@ class KT_Coc extends StatelessWidget {
   }
 }
 
-
 class KT_Ml extends StatelessWidget {
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff22577A),
@@ -478,7 +468,7 @@ class KT_genshin extends StatelessWidget {
 
 class KT_PubgM extends StatelessWidget {
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff22577A),
@@ -521,9 +511,10 @@ class KT_PubgM extends StatelessWidget {
     );
   }
 }
+
 class KT_Fortnite extends StatelessWidget {
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff22577A),
@@ -566,6 +557,7 @@ class KT_Fortnite extends StatelessWidget {
     );
   }
 }
+
 class KT_Honkai extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

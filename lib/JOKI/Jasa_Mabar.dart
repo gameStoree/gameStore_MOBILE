@@ -9,15 +9,15 @@ class JasaMabar extends StatefulWidget {
 
 class _JasamabarState extends State<JasaMabar> {
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( 
+      appBar: AppBar(
         title: Text('Halaman Jasa Main Bareng'), // Judul halaman
       ),
       body: Center(
         child: Container(
           child: Text(
-            'Mabar ', 
+            'Mabar ',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

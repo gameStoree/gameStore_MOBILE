@@ -7,7 +7,7 @@ class pemesananDiamond {
   final int id_user;
   final String createdAt;
 
-  pemesananDiamond ({
+  pemesananDiamond({
     required this.id,
     required this.id_server,
     required this.no_hp,
@@ -17,19 +17,15 @@ class pemesananDiamond {
     required this.createdAt,
   });
 
-  factory pemesananDiamond.fromJson(Map<String, dynamic> json){
+  factory pemesananDiamond.fromJson(Map<String, dynamic> json) {
     return pemesananDiamond(
-    id: json['id'],
-    id_server: json['id_server'],
-    no_hp: json['no_hp'],
-    status: json['status'],
-    id_diamond: json['id_diamond'],
-    id_user: json['id_user'],
-    createdAt: json['created_at'],
+      id: json['id'],
+      id_server: json['id_server'],
+      no_hp: json['no_hp'],
+      status: json['status'],
+      id_diamond: json['id_diamond'],
+      id_user: json['id_user'],
+      createdAt: json['created_at'],
     );
   }
-
-
-
 }
-

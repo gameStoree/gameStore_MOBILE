@@ -6,6 +6,7 @@ class OrderJokiPage extends StatefulWidget {
   @override
   State<OrderJokiPage> createState() => _OrderJokiPageState();
 }
+
 class _OrderJokiPageState extends State<OrderJokiPage> {
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,7 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
     String getValueAsString(dynamic value) {
       return value != null ? value.toString() : 'Tidak ada data';
     }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -44,25 +46,39 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   "Terima Kasih!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8,),
+                SizedBox(
+                  height: 8,
+                ),
                 Text(
                   'Transaksi Sudah Selesai.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: 15,
+                ),
                 Text(
                   'Pesanan Kamu',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
-                SizedBox(height: 3,),
+                SizedBox(
+                  height: 3,
+                ),
                 Container(
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 61, 74, 87),
@@ -72,14 +88,20 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                   child: Text(
                     getValueAsString(orderData['id']),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
                 SizedBox(height: 8.0),
                 Text(
                   "Pesananmu Telah Diproses",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 12.0),
                 Container(
@@ -95,7 +117,10 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                     children: [
                       Text(
                         'Detail Pembelian',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text("Pembelian Produk: JOKI Rank Mobile Legend"),
@@ -104,34 +129,49 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 10.0),
                       Text(
                         'Nomor Invoice',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Nomor Invoice: ${getValueAsString(orderData['id'])}"),
+                      Text(
+                          "Nomor Invoice: ${getValueAsString(orderData['id'])}"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
-                       Text(
+                      Text(
                         'ID Pemesanan Joki',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Item Id:  ${getValueAsString(orderData['id_paket'])}"),
+                      Text(
+                          "Item Id:  ${getValueAsString(orderData['id_paket'])}"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
                       Text(
                         'Item Dibeli',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Buy:  ${getValueAsString(orderData['jumlah_bintang'])}"),
+                      Text(
+                          "Buy:  ${getValueAsString(orderData['jumlah_bintang'])}"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
                       Text(
                         'Status Pembayaran',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text("Status: ${getValueAsString(orderData['status'])}"),
@@ -140,25 +180,34 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 10.0),
                       Text(
                         'Pesan',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Transaksi Berhasil pada: ${getValueAsString(orderData['created_at']).substring(0, 19)}"),
+                      Text(
+                          "Transaksi Berhasil pada: ${getValueAsString(orderData['created_at']).substring(0, 19)}"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
                       Text(
                         'Total Pembayaran',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Rp : ${getValueAsString(orderData['harga_keseluruhan'])}"),
+                      Text(
+                          "Rp : ${getValueAsString(orderData['harga_keseluruhan'])}"),
                       SizedBox(height: 10.0),
-                    
                     ],
                   ),
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: 15,
+                ),
                 Container(
                   width: 365,
                   margin: EdgeInsets.symmetric(vertical: 10.0),
@@ -172,14 +221,20 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                     children: [
                       Text(
                         'Informasi Akun',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 8.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 8.0),
                       Text(
                         'Login Via',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text(getValueAsString(orderData['login_via'])),
@@ -188,7 +243,10 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 8.0),
                       Text(
                         'User ID & NickName',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text(getValueAsString(orderData['Id_Server'])),
@@ -197,7 +255,10 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 8.0),
                       Text(
                         'Email',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text(getValueAsString(orderData['email_no_hp_montonID'])),
@@ -206,7 +267,10 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 8.0),
                       Text(
                         'Password',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text(getValueAsString(orderData['password'])),
@@ -215,7 +279,10 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 8.0),
                       Text(
                         'Request Hero',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text(getValueAsString(orderData['request_hero'])),
@@ -224,7 +291,10 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 8.0),
                       Text(
                         'Catatan Untuk Pejoki',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       SizedBox(height: 2.0),
                       Text(getValueAsString(orderData['catatan_penjoki'])),
@@ -265,40 +335,44 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10,),
-              Container(
-              margin: EdgeInsets.symmetric(horizontal: 22),
-              child: ElevatedButton(
-              onPressed: () {
-
-
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Color(0xff22577A),
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.shopping_cart,
-                  color: Colors.yellow,),
-                  SizedBox(width: 7),
-                  Text(
-                    "Bayar Now",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.yellow,
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 22),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: Color(0xff22577A),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.shopping_cart,
+                          color: Colors.yellow,
+                        ),
+                        SizedBox(width: 7),
+                        Text(
+                          "Bayar Now",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.yellow,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-                SizedBox(height: 25,),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
               ],
             ),
           ),

@@ -11,7 +11,7 @@ class welcomescreen extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-               color: Color(0xff80ED99),
+              color: Color(0xff80ED99),
               image: DecorationImage(
                 image: AssetImage("images/screen1.png"),
                 fit: BoxFit.contain,
@@ -36,25 +36,27 @@ class welcomescreen extends StatelessWidget {
                 SizedBox(height: 10), // Tambahkan jarak antara teks dan tombol
                 InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => Wrapper(),
-                      ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Wrapper(),
+                        ));
                     // Tindakan ketika tombol ditekan
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                    decoration : BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Color(0xff38A3A5),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child : Text (
+                    child: Text(
                       'Get Started',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
                 ),

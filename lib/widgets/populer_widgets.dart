@@ -12,32 +12,31 @@ class Populerw extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-            SizedBox(height: 1),
+          SizedBox(height: 1),
           _buildImage('images/PO_topup.png', () {
             _navigateToMlScreen(context);
           }),
-            SizedBox(height: 1),
+          SizedBox(height: 1),
           _buildImage('images/PO_ff.png', () {
             _navigateToFFScreen(context);
           }),
           _buildImage('images/PO_coc.png', () {
             _navigateToCOC(context);
           }),
-            SizedBox(height: 1),
-          _buildImage('images/PO_JOKI.png', () {
-          }), 
-            SizedBox(height: 1),
+          SizedBox(height: 1),
+          _buildImage('images/PO_JOKI.png', () {}),
+          SizedBox(height: 1),
           _buildImage('images/PO_genshin.png', () {
             _navigateToGenshin(context);
-          }), 
-            SizedBox(height: 1),
+          }),
+          SizedBox(height: 1),
           _buildImage('images/PO_pubg.png', () {
             _navigateToPUBG(context);
-          }), 
-            SizedBox(height: 1),
+          }),
+          SizedBox(height: 1),
           _buildImage('images/PO_valo.png', () {
             _navigateToValo(context);
-          }), 
+          }),
         ],
       ),
     );
@@ -58,26 +57,35 @@ class Populerw extends StatelessWidget {
   }
 
   void _navigateToMlScreen(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MlScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MlScreen()));
   }
+
   void _navigateToFFScreen(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => FFScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => FFScreen()));
   }
+
   void _navigateToCOC(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CocTopUp()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CocTopUp()));
   }
+
   // void _navigateToJoki(BuildContext context) {
   //   Navigator.push(context, MaterialPageRoute(builder: (context) => CocTopUp()));
   // }
   void _navigateToGenshin(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => GenshinScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => GenshinScreen()));
   }
+
   void _navigateToPUBG(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => PubgScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => PubgScreen()));
   }
+
   void _navigateToValo(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ValoScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ValoScreen()));
   }
-  
-  
 }

@@ -1,5 +1,4 @@
-
-class Orderan{
+class Orderan {
   final String id;
   final String createdAt;
 

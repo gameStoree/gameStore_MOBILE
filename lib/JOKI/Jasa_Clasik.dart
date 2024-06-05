@@ -4,13 +4,13 @@ class JasaClasik extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( 
+      appBar: AppBar(
         title: Text('Halaman Joki Clasik'), // Judul halaman
       ),
       body: Center(
         child: Container(
           child: Text(
-            'JOKI Clasik', 
+            'JOKI Clasik',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:project/Login_2/sendOTP.dart';
 // import 'otp_verification_page.dart';
 
-
 class lupaPw extends StatefulWidget {
   const lupaPw({Key? key});
 
@@ -15,8 +14,7 @@ class lupaPw extends StatefulWidget {
 class _lupaPwState extends State<lupaPw> {
   final TextEditingController _emailController = TextEditingController();
 
-
-   Future<void> sendOTP() async {
+  Future<void> sendOTP() async {
     final response = await http.post(
       Uri.parse('http://your-laravel-api-url/api/forgot-password'),
       body: {'email': _emailController.text},
@@ -25,15 +23,16 @@ class _lupaPwState extends State<lupaPw> {
     if (response.statusCode == 200) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => OTPVerificationPage(email: _emailController.text)),
+        MaterialPageRoute(
+            builder: (context) =>
+                OTPVerificationPage(email: _emailController.text)),
       );
     } else {
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to send OTP')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to send OTP')));
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {

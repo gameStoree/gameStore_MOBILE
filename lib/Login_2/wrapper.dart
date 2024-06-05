@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project/Login_2/login.dart';
@@ -18,15 +16,14 @@ class _WrapperState extends State<Wrapper> {
     return Scaffold(
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context,snapshot){
-          if (snapshot.hasData){
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             return HomeScreen();
-          }else{
+          } else {
             return login();
           }
-        }
-        ,),
-
+        },
+      ),
     );
   }
 }

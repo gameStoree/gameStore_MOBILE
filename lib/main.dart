@@ -15,12 +15,11 @@ void main() async {
   // List<Pemesanan> Datajoki= await fetchJokirank();
   await SpUtil.getInstance();
   await Firebase.initializeApp();
-  runApp( MyApp());
- 
- }
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-   MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/search', page: () => SearchPage()),
         GetPage(name: '/account', page: () => Profile()),
       ],
-      home:  welcomescreen(),
+      home: welcomescreen(),
       builder: EasyLoading.init(),
     );
   }

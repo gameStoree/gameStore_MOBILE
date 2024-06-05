@@ -16,83 +16,81 @@ import '../widgets/home_buttom.dart';
 import '../widgets/items_widget.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
-
-
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _current = 0;
   final CarouselController _controller = CarouselController();
   bool hasNewOrder = false;
 
-
- void logout() async {
-  EasyLoading.show(status: 'Logging out...');
-  String? token = SpUtil.getString('token');
-  if (token != null) {
-    Uri apiUrl = Uri.parse('http://10.0.2.2:8000/api/logout');
-    try {
-      var response = await http.post(
-        apiUrl,
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
-      if (response.statusCode == 200) {
-        SpUtil.remove('token');
-        SpUtil.remove('email');
-        SpUtil.remove('nama_lengkap');
-        SpUtil.remove('alamat');
-        SpUtil.remove('foto_user');
-        EasyLoading.dismiss();
-        Get.snackbar(
-          "Success",
-          "Logout berhasil",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
+  void logout() async {
+    EasyLoading.show(status: 'Logging out...');
+    String? token = SpUtil.getString('token');
+    if (token != null) {
+      Uri apiUrl = Uri.parse('http://10.0.2.2:8000/api/logout');
+      try {
+        var response = await http.post(
+          apiUrl,
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
         );
-        Get.offAllNamed('/login');
-      } else {
+        if (response.statusCode == 200) {
+          SpUtil.remove('token');
+          SpUtil.remove('email');
+          SpUtil.remove('nama_lengkap');
+          SpUtil.remove('alamat');
+          SpUtil.remove('foto_user');
+          EasyLoading.dismiss();
+          Get.snackbar(
+            "Success",
+            "Logout berhasil",
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          Get.offAllNamed('/login');
+        } else {
+          EasyLoading.dismiss();
+          print('Logout failed: ${response.statusCode}');
+        }
+      } catch (e) {
         EasyLoading.dismiss();
-        print('Logout failed: ${response.statusCode}');
+        print('Error: $e');
       }
-    } catch (e) {
+    } else {
       EasyLoading.dismiss();
-      print('Error: $e');
+      print('Token tidak ditemukan di local storage');
     }
-  } else {
-    EasyLoading.dismiss();
-    print('Token tidak ditemukan di local storage');
   }
-}
 
-Future<List<Orderan>> fetchOrderIds(int userId) async {
-  final url = Uri.parse('http://10.0.2.2:8000/api/order-ids/$userId');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-    final List<dynamic> orderJson = json.decode(response.body)['orders'];
-    print(orderJson);
-    return orderJson.map((json) => Orderan.fromJson(json)).toList();
-  } else {
-    throw Exception('Failed to load');
+  Future<List<Orderan>> fetchOrderIds(int userId) async {
+    final url = Uri.parse('http://10.0.2.2:8000/api/order-ids/$userId');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final List<dynamic> orderJson = json.decode(response.body)['orders'];
+      print(orderJson);
+      return orderJson.map((json) => Orderan.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load');
+    }
   }
-}
 
-void checkForNewOrders() async {
-  int userId = SpUtil.getInt('id_user') ?? 0;
-  List<Orderan> orders = await fetchOrderIds(userId);
-  print(orders);
+  void checkForNewOrders() async {
+    int userId = SpUtil.getInt('id_user') ?? 0;
+    List<Orderan> orders = await fetchOrderIds(userId);
+    print(orders);
 
-  setState(() {
-    hasNewOrder = orders.isNotEmpty;
-  });
-}
+    setState(() {
+      hasNewOrder = orders.isNotEmpty;
+    });
+  }
 
   @override
   void initState() {
@@ -113,7 +111,6 @@ void checkForNewOrders() async {
     _tabController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -150,92 +147,97 @@ void checkForNewOrders() async {
                           size: 35,
                         ),
                       ),
-                    InkWell(
-                    onTap: () async {
-                      try {
-                        int userId = SpUtil.getInt('id_user') ?? 0;
-                        List<Orderan> orders = await fetchOrderIds(userId);
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.white,
-                              title: Text("Pemberitahuan"),
-                              content: orders.isNotEmpty
-                                  ? Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: orders.map((order) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                          child: Text(
-                                            'ID Pemesanan: ${order.id}\nTanggal: ${order.createdAt.substring(0, 19)}',
-                                            style: TextStyle(fontSize: 15),
-                                          ),
-                                        );
-                                      }).toList(),
-                                    )
-                                  : Text("Belum ada pemberitahuan", style: TextStyle(fontSize: 20)),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Tutup"),
-                                ),
-                              ],
+                      InkWell(
+                        onTap: () async {
+                          try {
+                            int userId = SpUtil.getInt('id_user') ?? 0;
+                            List<Orderan> orders = await fetchOrderIds(userId);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  title: Text("Pemberitahuan"),
+                                  content: orders.isNotEmpty
+                                      ? Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: orders.map((order) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                'ID Pemesanan: ${order.id}\nTanggal: ${order.createdAt.substring(0, 19)}',
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        )
+                                      : Text("Belum ada pemberitahuan",
+                                          style: TextStyle(fontSize: 20)),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Tutup"),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
-                          },
-                        );
-                        setState(() {
-                          hasNewOrder = false;
-                        });
-                      } catch (e) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Pemberitahuan"),
-                              content: Text("Gagal memuat ID pemesanan", style: TextStyle(fontSize: 20)),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Tutup"),
-                                ),
-                              ],
+                            setState(() {
+                              hasNewOrder = false;
+                            });
+                          } catch (e) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Pemberitahuan"),
+                                  content: Text("Gagal memuat ID pemesanan",
+                                      style: TextStyle(fontSize: 20)),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Tutup"),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
-                          },
-                        );
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        Icon(
-                          Icons.notifications_active,
-                          color: Colors.white,
-                          size: 35,
-                        ),
-                        if (hasNewOrder)
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: Container(
-                              padding: EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              constraints: BoxConstraints(
-                                minWidth: 12,
-                                minHeight: 12,
-                              ),
+                          }
+                        },
+                        child: Stack(
+                          children: [
+                            Icon(
+                              Icons.notifications_active,
+                              color: Colors.white,
+                              size: 35,
                             ),
-                          ),
-                      ],
-                    ),
-                  ),
+                            if (hasNewOrder)
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  constraints: BoxConstraints(
+                                    minWidth: 12,
+                                    minHeight: 12,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -265,7 +267,7 @@ void checkForNewOrders() async {
                   ),
                 ),
                 SizedBox(height: 10),
-                    Column(
+                Column(
                   children: [
                     Container(
                       child: CarouselSlider(
@@ -286,7 +288,8 @@ void checkForNewOrders() async {
                                 child: Container(
                                   margin: EdgeInsets.all(5.0),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                     child: Image.asset(
                                       item,
                                       fit: BoxFit.cover,
@@ -310,13 +313,16 @@ void checkForNewOrders() async {
                               child: Container(
                                 width: 12.0,
                                 height: 12.0,
-                                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 4.0),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: (Theme.of(context).brightness == Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black)
-                                      .withOpacity(_current == entry.key ? 0.9 : 0.4),
+                                  color: (Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black)
+                                      .withOpacity(
+                                          _current == entry.key ? 0.9 : 0.4),
                                 ),
                               ),
                             ),
@@ -338,7 +344,8 @@ void checkForNewOrders() async {
                     ),
                     insets: EdgeInsets.symmetric(horizontal: 16),
                   ),
-                  labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  labelStyle:
+                      TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                   labelPadding: EdgeInsets.symmetric(horizontal: 20),
                   tabs: [
                     Tab(
@@ -347,7 +354,7 @@ void checkForNewOrders() async {
                     Tab(
                       text: "Jasa MLBB",
                     ),
-                     Tab(
+                    Tab(
                       text: "Top Up Games",
                     ),
                   ],
@@ -358,7 +365,6 @@ void checkForNewOrders() async {
                     Populerw(),
                     listJoki(),
                     ItemsWidget(),
-                    
                   ][_tabController.index],
                 ),
               ],
@@ -375,7 +381,8 @@ void checkForNewOrders() async {
               decoration: BoxDecoration(
                 color: Color(0xff22577A),
               ),
-              child: Text('${SpUtil.getString("email")}',
+              child: Text(
+                '${SpUtil.getString("email")}',
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -386,10 +393,10 @@ void checkForNewOrders() async {
               title: Text('Profile'),
               onTap: () {
                 Navigator.pop(context);
-                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Profile()),
-              );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
               }, // Add this line
             ), // Add this line
             ListTile(

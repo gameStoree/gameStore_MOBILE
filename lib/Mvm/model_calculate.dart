@@ -8,7 +8,7 @@ class ModelCalculate {
 
     int jumlah = int.tryParse(jumlahItem) ?? 0;
     int harga = int.tryParse(hargaJoki) ?? 0;
-    
+
     int total = jumlah * harga;
     return total.toString();
   }

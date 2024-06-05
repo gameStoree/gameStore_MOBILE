@@ -8,8 +8,6 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class JasaMCL extends StatefulWidget {
   const JasaMCL({super.key});
 
@@ -26,29 +24,33 @@ class _JasaMCLState extends State<JasaMCL> {
   TextEditingController requestHero = TextEditingController();
   TextEditingController catatan = TextEditingController();
 
-
   late String valueChoose;
   late Future<List<Datajoki>> _jokiFuture;
-  List<String> listItem = ["Pilih Via Login ", "Moonton(Rekomendasi)", "Vk", "Tiktok", "Facrbook"];
-
+  List<String> listItem = [
+    "Pilih Via Login ",
+    "Moonton(Rekomendasi)",
+    "Vk",
+    "Tiktok",
+    "Facrbook"
+  ];
 
   Future<List<Datajoki>> fetchJokirank(String datajoki) async {
-  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/jokirank?data=$datajoki'));
-  if (response.statusCode == 200) {
-    List<dynamic> data = jsonDecode(response.body)['data'];
-    return data.map((json) => Datajoki.fromJson(json)).toList();
-  } else {
-    throw Exception('Failed to load Data joki');
+    final response = await http
+        .get(Uri.parse('http://10.0.2.2:8000/api/jokirank?data=$datajoki'));
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body)['data'];
+      return data.map((json) => Datajoki.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load Data joki');
+    }
   }
-}
 
   @override
   void initState() {
     super.initState();
     valueChoose = listItem[0];
-     _jokiFuture = fetchJokirank('Joki Rank');
+    _jokiFuture = fetchJokirank('Joki Rank');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +92,7 @@ class _JasaMCLState extends State<JasaMCL> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                 Container(
+                Container(
                   padding: EdgeInsets.all(16),
                   color: Color(0xff22577A),
                   child: Row(
@@ -108,35 +110,35 @@ class _JasaMCLState extends State<JasaMCL> {
                           children: <Widget>[
                             SizedBox(height: 1),
                             Text(
-                              'Mobile Legend', 
+                              'Mobile Legend',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white, 
+                                color: Colors.white,
                               ),
                             ),
-                            SizedBox(height: 1), 
+                            SizedBox(height: 1),
                             Text(
-                              'Moonton', 
+                              'Moonton',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.white, 
+                                color: Colors.white,
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 10), 
+                              padding: EdgeInsets.only(top: 10),
                               child: Row(
                                 children: <Widget>[
                                   Icon(
                                     Icons.check_circle,
-                                    color: Colors.green, 
+                                    color: Colors.green,
                                   ),
-                                  SizedBox(width: 10), 
+                                  SizedBox(width: 10),
                                   Text(
-                                    'Terverifikasi', 
+                                    'Terverifikasi',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.white, 
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
@@ -148,8 +150,9 @@ class _JasaMCLState extends State<JasaMCL> {
                     ],
                   ),
                 ),
-                      Container(
-                  margin: EdgeInsets.only(bottom: 10, top: 15, left: 15, right: 15),
+                Container(
+                  margin:
+                      EdgeInsets.only(bottom: 10, top: 15, left: 15, right: 15),
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Color(0xff22577A),
@@ -183,7 +186,9 @@ class _JasaMCLState extends State<JasaMCL> {
                             Icons.phone,
                             color: Color(0xff80ED99),
                           ),
-                          SizedBox(width: 8), // Spasi horizontal antara ikon dan teks
+                          SizedBox(
+                              width:
+                                  8), // Spasi horizontal antara ikon dan teks
                           Text(
                             'Jaminan Layanan 24 Jam',
                             style: TextStyle(
@@ -238,11 +243,12 @@ class _JasaMCLState extends State<JasaMCL> {
                 GestureDetector(
                   onTap: () {
                     AwesomeDialog(
-          context: context,
-          dialogType: DialogType.info,
-          animType: AnimType.topSlide,
-          title: 'Peringatan',
-          desc: """Mohon luangkan waktu untuk membaca catatan Informasi sebelum melakukan pemesanan.
+                      context: context,
+                      dialogType: DialogType.info,
+                      animType: AnimType.topSlide,
+                      title: 'Peringatan',
+                      desc:
+                          """Mohon luangkan waktu untuk membaca catatan Informasi sebelum melakukan pemesanan.
 
 Waktu Pengecekan Orderan :
 Orderan yang sudah dibayarkan akan kami cek setiap hari mulai pukul 07.00 - 22.00 WIB.
@@ -264,8 +270,8 @@ Berikut Syarat Dan Ketentuan Sebelum Order Jasa Joki :
 
 Jika Butuh Bantuan Harap Hubungi Admin Gamestore.ID
 Terimakasih""",
-          btnOkOnPress: () {},
-        ).show();
+                      btnOkOnPress: () {},
+                    ).show();
                   },
                   child: Container(
                     margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
@@ -327,245 +333,244 @@ Terimakasih""",
                   ),
                 ),
                 Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Color(0xffC7F9CC)),
-                  color: Color(0xff22577A),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      ' Masukan Data Akun Kamu',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      'User ID & Nickname',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 9),
                     Container(
-                    margin: EdgeInsets.only(bottom: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Color(0xff22577A),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.white),
-                    ),
-                    child: TextFormField(
-                      controller: idGame,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Masukan ID Game kamu',
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: InputBorder.none,
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Harap masukkan ID Game';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                    SizedBox(height: 9),
-                    Text(
-                      'Server',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 9),
-                    Container(
-                      padding: EdgeInsets.only(left: 10, right: 15),
+                      margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
+                      padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xffC7F9CC)),
                         color: Color(0xff22577A),
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButton(
-                              isExpanded: true,
-                              hint: Text("Pilih Server"),
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            ' Masukan Data Akun Kamu',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text(
+                            'User ID & Nickname',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 0),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: TextFormField(
+                              controller: idGame,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Masukan ID Game kamu',
+                                hintStyle: TextStyle(color: Colors.white54),
+                                border: InputBorder.none,
                               ),
-                              dropdownColor: Color(0xff22577A),
-                              iconSize: 25,
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                              value: valueChoose,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  valueChoose = newValue.toString();
-                                });
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Harap masukkan ID Game';
+                                }
+                                return null;
                               },
-                              items: listItem.map((valueItem) {
-                                return DropdownMenuItem(
-                                  value: valueItem,
-                                  child: Text(valueItem),
-                                );
-                              }).toList(),
+                            ),
+                          ),
+                          SizedBox(height: 9),
+                          Text(
+                            'Server',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),
+                          Container(
+                            padding: EdgeInsets.only(left: 10, right: 15),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    hint: Text("Pilih Server"),
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.white,
+                                    ),
+                                    dropdownColor: Color(0xff22577A),
+                                    iconSize: 25,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    value: valueChoose,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        valueChoose = newValue.toString();
+                                      });
+                                    },
+                                    items: listItem.map((valueItem) {
+                                      return DropdownMenuItem(
+                                        value: valueItem,
+                                        child: Text(valueItem),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Email/No Hp/Moonton ID',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 0),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: TextFormField(
+                              controller: email_moonton,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Ketikan Email/Moonton ID',
+                                hintStyle: TextStyle(color: Colors.white54),
+                                border: InputBorder.none,
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Harap akun Mobile legend Anda';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Password',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 0),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: TextFormField(
+                              controller: password,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Ketikan Password',
+                                hintStyle: TextStyle(color: Colors.white54),
+                                border: InputBorder.none,
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Harap masukkan password anda';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Request Hero',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 0),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: TextFormField(
+                              controller: requestHero,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Request Hero',
+                                hintStyle: TextStyle(color: Colors.white54),
+                                border: InputBorder.none,
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Harap Request Hero yang anda inginkan';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Catatan Untuk Pejoki',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 9),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 0),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Color(0xff22577A),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: TextFormField(
+                              controller: catatan,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Masukan Catatan untuk pejoki',
+                                hintStyle: TextStyle(color: Colors.white54),
+                                border: InputBorder.none,
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Harap masukkan Catatan';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Email/No Hp/Moonton ID',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 9),
-                    Container(
-                    margin: EdgeInsets.only(bottom: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Color(0xff22577A),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.white),
-                    ),
-                    child: TextFormField(
-                      controller: email_moonton,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Ketikan Email/Moonton ID',
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: InputBorder.none,
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Harap akun Mobile legend Anda';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-
-                    SizedBox(height: 10),
-                    Text(
-                      'Password',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 9),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Color(0xff22577A),
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: Colors.white),
-                      ),
-                      child: TextFormField(
-                        controller: password,
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            hintText: 'Ketikan Password',
-                            hintStyle: TextStyle(color: Colors.white54),
-                            border: InputBorder.none,
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Harap masukkan password anda';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                    Text(
-                      'Request Hero',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 9),
-                   Container(
-                    margin: EdgeInsets.only(bottom: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Color(0xff22577A),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.white),
-                    ),
-                    child: TextFormField(
-                      controller: requestHero,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Request Hero',
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: InputBorder.none,
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Harap Request Hero yang anda inginkan';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                      SizedBox(height: 10),
-                    Text(
-                      'Catatan Untuk Pejoki',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 9),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Color(0xff22577A),
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: Colors.white),
-                      ),
-                      child: TextFormField(
-                        controller: catatan,
-                        style: TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: 'Masukan Catatan untuk pejoki',
-                          hintStyle: TextStyle(color: Colors.white54),
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Harap masukkan Catatan';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
                 Container(
                   margin: EdgeInsets.only(bottom: 8, left: 20, right: 15),
                   child: Text(
@@ -576,74 +581,77 @@ Terimakasih""",
                     ),
                   ),
                 ),
-              // ListView.builder(
-              //     shrinkWrap: true,
-              //     itemCount: listJoki.length,
-              //     itemBuilder: (context, index) {
-              //       Datajoki listjokis = listJoki[index];
-              //       return GestureDetector(
-              //         onTap: () {
-              //           setState(() {
-              //             _selectedPaketId = listjokis.id_paket;
-              //           });
-              //         },
-              //       child: Container(
-              //         margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
-              //         padding: EdgeInsets.all(10),
-              //         decoration: BoxDecoration(
-              //           color: _selectedPaketId == listjokis.id_paket ? Colors.blue : Color(0xff22577A),
-              //           borderRadius: BorderRadius.circular(10),
-              //         ),
-              //         child: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Text(
-              //               'Id Paket : ${listjokis.id_paket}',
-              //               style: TextStyle(
-              //                 color: Colors.white,
-              //                 fontSize: 16,
-              //               ),
-              //             ),
-              //             SizedBox(height: 5),
-              //             Text(
-              //               'Nama Paket : ${listjokis.nama_paket}',
-              //               style: TextStyle(
-              //                 color: Colors.white,
-              //                 fontSize: 16,
-              //               ),
-              //             ),
-              //             SizedBox(height: 5),
-              //             Text(
-              //               'Rank : ${listjokis.joki_rank}',
-              //               style: TextStyle(
-              //                 color: Colors.white,
-              //                 fontSize: 16,
-              //               ),
-              //             ),
-              //             SizedBox(height: 5),
-              //             Text(
-              //               'Harga : Rp ${listjokis.harga_joki}',
-              //               style: TextStyle(
-              //                 color: Colors.white,
-              //                 fontSize: 16,
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     );
-              //   },
-              // ),
-                SizedBox(height: 20,),
-                 Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                // ListView.builder(
+                //     shrinkWrap: true,
+                //     itemCount: listJoki.length,
+                //     itemBuilder: (context, index) {
+                //       Datajoki listjokis = listJoki[index];
+                //       return GestureDetector(
+                //         onTap: () {
+                //           setState(() {
+                //             _selectedPaketId = listjokis.id_paket;
+                //           });
+                //         },
+                //       child: Container(
+                //         margin: EdgeInsets.only(bottom: 8, left: 15, right: 15),
+                //         padding: EdgeInsets.all(10),
+                //         decoration: BoxDecoration(
+                //           color: _selectedPaketId == listjokis.id_paket ? Colors.blue : Color(0xff22577A),
+                //           borderRadius: BorderRadius.circular(10),
+                //         ),
+                //         child: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Text(
+                //               'Id Paket : ${listjokis.id_paket}',
+                //               style: TextStyle(
+                //                 color: Colors.white,
+                //                 fontSize: 16,
+                //               ),
+                //             ),
+                //             SizedBox(height: 5),
+                //             Text(
+                //               'Nama Paket : ${listjokis.nama_paket}',
+                //               style: TextStyle(
+                //                 color: Colors.white,
+                //                 fontSize: 16,
+                //               ),
+                //             ),
+                //             SizedBox(height: 5),
+                //             Text(
+                //               'Rank : ${listjokis.joki_rank}',
+                //               style: TextStyle(
+                //                 color: Colors.white,
+                //                 fontSize: 16,
+                //               ),
+                //             ),
+                //             SizedBox(height: 5),
+                //             Text(
+                //               'Harga : Rp ${listjokis.harga_joki}',
+                //               style: TextStyle(
+                //                 color: Colors.white,
+                //                 fontSize: 16,
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     );
+                //   },
+                // ),
+                SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            margin: EdgeInsets.only(bottom: 10, left: 15, right: 15),
+                            margin: EdgeInsets.only(
+                                bottom: 10, left: 15, right: 15),
                             padding: EdgeInsets.all(7),
                             decoration: BoxDecoration(
                               color: Color(0xff22577A),
@@ -651,66 +659,76 @@ Terimakasih""",
                               border: Border.all(color: Colors.white),
                             ),
                             child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: TextFormField(
-                              controller: Nohp,
-                              style: TextStyle(color: Colors.white,
-                              fontSize: 18,
+                              padding: const EdgeInsets.all(2.0),
+                              child: TextFormField(
+                                controller: Nohp,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Masukan Nomer Hp Anda',
+                                  hintStyle: TextStyle(color: Colors.white54),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(left: 10),
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ], // Hanya angka yang diizinkan
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Harap masukkan Hp Anda';
+                                  }
+                                  return null;
+                                },
                               ),
-                            decoration: InputDecoration(
-                                hintText: 'Masukan Nomer Hp Anda',
-                                hintStyle: TextStyle(color: Colors.white54),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(left: 10),
-                              ),
-                              inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Hanya angka yang diizinkan
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Harap masukkan Hp Anda';
-                                }
-                                return null;
-                              },
                             ),
-                          ),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                      SizedBox(height: 10,),
-                          Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        child: ElevatedButton(
-                        onPressed: () {
-                          // PopupPemesanan(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size(double.infinity, 50),
-                          backgroundColor: Color(0xff22577A),
-                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.shopping_cart,
-                            color: Colors.yellow,),
-                            SizedBox(width: 7),
-                            Text(
-                              "Beli Sekarang!",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.yellow, // Warna teks kuning
-                              ),
-                            ),
-                          ],
-                        ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // PopupPemesanan(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: Color(0xff22577A),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                     SizedBox(height: 30,),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.shopping_cart,
+                          color: Colors.yellow,
+                        ),
+                        SizedBox(width: 7),
+                        Text(
+                          "Beli Sekarang!",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.yellow, // Warna teks kuning
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
               ],
             );
           } else {

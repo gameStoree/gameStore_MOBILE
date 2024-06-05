@@ -27,11 +27,14 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
       // Navigate to password reset page
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ResetPasswordPage(email: widget.email, otp: _otpController.text)),
+        MaterialPageRoute(
+            builder: (context) => ResetPasswordPage(
+                email: widget.email, otp: _otpController.text)),
       );
     } else {
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid OTP')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Invalid OTP')));
     }
   }
 

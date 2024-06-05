@@ -13,7 +13,8 @@ class ResetPasswordPage extends StatefulWidget {
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   Future<void> resetPassword() async {
     final response = await http.post(
@@ -28,11 +29,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     if (response.statusCode == 200) {
       // Show success message and navigate to login page or home page
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Password has been reset')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Password has been reset')));
       Navigator.popUntil(context, ModalRoute.withName('/'));
     } else {
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to reset password')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to reset password')));
     }
   }
 

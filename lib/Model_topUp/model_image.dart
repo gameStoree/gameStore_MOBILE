@@ -1,5 +1,3 @@
-
-
 class UserPhoto {
   final String photoUrl;
 
@@ -11,4 +9,3 @@ class UserPhoto {
     );
   }
 }
-

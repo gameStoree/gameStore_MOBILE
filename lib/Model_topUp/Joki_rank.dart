@@ -1,4 +1,3 @@
-
 class Datajoki {
   final int id_paket;
   final String nama_paket;

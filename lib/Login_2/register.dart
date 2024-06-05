@@ -149,7 +149,9 @@ class _RegisterState extends State<Register> {
                       fillColor: Colors.white,
                       prefixIcon: Icon(Icons.lock),
                       suffixIcon: IconButton(
-                        icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+                        icon: Icon(_isObscure
+                            ? Icons.visibility
+                            : Icons.visibility_off),
                         onPressed: () {
                           setState(() {
                             _isObscure = !_isObscure;
@@ -203,7 +205,6 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 50),
-
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
