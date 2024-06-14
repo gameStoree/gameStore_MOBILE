@@ -1,12 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:project/Mvm/searchjokipemesanan.dart';
+// import 'package:project/screens/imagepemesanan.dart';
 
 class OrderDetailWidget extends StatefulWidget {
   final Pemesanan order;
   final Paket paket;
+  final List<String> images;
 
-  const OrderDetailWidget({Key? key, required this.order, required this.paket})
+  const OrderDetailWidget(
+      {Key? key, required this.order, required this.paket, required this.images})
       : super(key: key);
+
 
   @override
   _OrderDetailWidgetState createState() => _OrderDetailWidgetState();
@@ -365,8 +370,40 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                     ],
                   ),
                 ),
-                // SizedBox(height: 10),
-                SizedBox(height: 25),
+                 SizedBox(height: 15),
+               Text(
+                'Screnshot hasil Joki',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 5),
+               Container(
+              height: 200,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: widget.images.map((image) {
+                     print('Loading image: $image');
+                    return Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CachedNetworkImage(
+                        imageUrl: image,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        width: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            SizedBox(height: 25),
               ],
             ),
           ),

@@ -58,7 +58,7 @@ class _MLScreenState extends State<MlScreen> {
     print("Nilai combinedIdGame: $combinedIdGame");
     final url = Uri.parse('http://10.0.2.2:8000/api/pemesanan-diamond');
     final Map<String, dynamic> PesananOrder = {
-      'id_server': combinedIdGame,
+      'id_server': combinedIdGame.toString(),
       'id_diamond': _selectedDiamond.toString(),
       'no_hp': noHpText.toString(),
       'harga_keseluruhan': totalHarga.toString(),
@@ -170,8 +170,8 @@ class _MLScreenState extends State<MlScreen> {
     if (response.statusCode == 200) {
       EasyLoading.dismiss();
       final jsonResponse = json.decode(response.body);
-      int id = jsonResponse['id'];
-      int zoneId = jsonResponse['zoneId'];
+      String id = jsonResponse['id'];
+      String zoneId = jsonResponse['zoneId'];
       String name = jsonResponse['name'];
 
       setState(() {

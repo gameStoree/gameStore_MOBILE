@@ -87,4 +87,21 @@ class Pemesanan {
       updatedAt: json['updated_at'],
     );
   }
+  
+}
+
+class ImageData {
+  final List<String> images;
+
+  ImageData({required this.images});
+
+  factory ImageData.fromJson(dynamic json) {
+    if (json is List) {
+      return ImageData(images: List<String>.from(json));
+    } else if (json is Map<String, dynamic>) {
+      return ImageData(images: List<String>.from(json['images']));
+    } else {
+      return ImageData(images: []);
+    }
+  }
 }

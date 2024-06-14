@@ -86,7 +86,7 @@ class _loginState extends State<login> {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-      }
+      } 
     } catch (e) {
       EasyLoading.dismiss();
       print(e);
@@ -110,9 +110,9 @@ class _loginState extends State<login> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color.fromRGBO(34, 87, 122, 1),
-              const Color.fromRGBO(76, 175, 80, 1)
-            ],
+  const Color(0xFF34A0A4),
+  const Color(0xFF184E77),
+],
           ),
         ),
         child: SingleChildScrollView(

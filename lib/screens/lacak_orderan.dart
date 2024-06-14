@@ -11,6 +11,7 @@ import 'package:project/widgets/home_buttom.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
+  // final int pemesananId;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -18,69 +19,75 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController _orderIdController = TextEditingController();
-  // Pemesanan? _order;
-  // Paket? _paket;
   bool _isLoading = false;
+  
 
-  Future<void> _searchOrder() async {
-    final String orderId = _orderIdController.text;
-    if (orderId.isEmpty) {
-      EasyLoading.showError("Id Pemesanan tidak boleh kosong!");
-      return;
-    }
+ Future<void> _searchOrder() async {
+  final String orderId = _orderIdController.text;
+  if (orderId.isEmpty) {
+    EasyLoading.showError("Id Pemesanan tidak boleh kosong!");
+    return;
+  }
 
-    setState(() {
-      _isLoading = true;
-    });
-    EasyLoading.show(status: 'Pesanan anda Diproses');
+  setState(() {
+    _isLoading = true;
+  });
+  EasyLoading.show(status: 'Pesanan anda Diproses');
 
-    final url = 'http://10.0.2.2:8000/api/search/$orderId';
-    final response = await http.get(Uri.parse(url));
+  final url = 'http://10.0.2.2:8000/api/search/$orderId';
+  final response = await http.get(Uri.parse(url));
 
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      if (responseData['type'] == 'joki Rank') {
-        final pemesananData = responseData['pemesanan'];
-        final paketData = responseData['paket'];
-        if (pemesananData != null && paketData != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrderDetailWidget(
-                order: Pemesanan.fromJson(pemesananData),
-                paket: Paket.fromJson(paketData),
-              ),
+  if (response.statusCode == 200) {
+    final responseData = json.decode(response.body);
+    final type = responseData['type'];
+
+    if (type == 'joki Rank') {
+      final pemesananData = responseData['pemesanan'];
+      final paketData = responseData['paket'];
+      final imageData = responseData['images'];
+      if (pemesananData != null && paketData != null && imageData != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDetailWidget(
+              order: Pemesanan.fromJson(pemesananData),
+              paket: Paket.fromJson(paketData),
+              images: List<String>.from(imageData),
             ),
-          );
-        } else {
-          EasyLoading.showError("Id Pemesanan tidak ditemukan!");
-        }
-      } else if (responseData['type'] == 'diamond') {
-        final pemesananDiamondData = responseData['pemesanan'];
-        if (pemesananDiamondData != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrderDiamondDetail(
-                order: Pemesanandiamond.fromJson(pemesananDiamondData),
-              ),
-            ),
-          );
-        } else {  
-          EasyLoading.showError("Id Pemesanan tidak ditemukan!");
-        }
+          ),
+        );
       } else {
-        EasyLoading.showError("Tipe pesanan tidak valid!");
+        EasyLoading.showError("Id Pemesanan tidak ditemukan!");
+      }
+    } else if (type == 'diamond') {
+      final pemesananDiamondData = responseData['pemesanan'];
+      if (pemesananDiamondData != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDiamondDetail(
+              order: Pemesanandiamond.fromJson(pemesananDiamondData),
+            ),
+          ),
+        );
+      } else {
+        EasyLoading.showError("Id Pemesanan tidak ditemukan!");
       }
     } else {
-      EasyLoading.showError("Terjadi kesalahan saat mengambil data!");
+      EasyLoading.showError("Tipe pesanan tidak valid!");
     }
-
-    setState(() {
-      _isLoading = false;
-    });
-    EasyLoading.dismiss();
+  } else {
+    EasyLoading.showError("Terjadi kesalahan saat mengambil data!");
   }
+
+  setState(() {
+    _isLoading = false;
+  });
+  EasyLoading.dismiss();
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:project/Form%20Pemesanan/cekfoto.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/home_buttom.dart';
@@ -72,7 +73,7 @@ class _ProfileState extends State<Profile> {
     final url = 'http://10.0.2.2:8000/api/users/$userId/photobn';
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.files
-        .add(await http.MultipartFile.fromPath('foto_user', image.path));
+        .add(await http.MultipartFile.fromPath('foto-user', image.path));
 
     try {
       final response = await request.send();
@@ -128,10 +129,10 @@ class _ProfileState extends State<Profile> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(34, 87, 122, 1),
-              Color.fromRGBO(76, 175, 80, 1)
-            ],
+                               colors: [
+  const Color(0xFF34A0A4),
+  const Color(0xFF184E77),
+],
           ),
         ),
         child: SingleChildScrollView(
@@ -186,7 +187,7 @@ class _ProfileState extends State<Profile> {
                           height: 120,
                           errorBuilder: (BuildContext context, Object exception,
                               StackTrace? stackTrace) {
-                            return Text('!');
+                            return Text('');
                           },
                         ),
                 ),
@@ -227,10 +228,11 @@ class _ProfileState extends State<Profile> {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   // context,
-                  //   // MaterialPageRoute(builder: (context) => KT_JokiRank()),
-                  // );
+                   // Navigasi ke halaman DisplayUploadedPhoto saat container diklik
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DisplayUploadedPhoto()),
+                  );
                 },
                 child: Container(
                   margin: EdgeInsets.only(bottom: 20, left: 60, right: 60),
@@ -243,7 +245,7 @@ class _ProfileState extends State<Profile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Lihat Riwayat Pesanan Anda',
+                        'Lihat Riwayat pembelian',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

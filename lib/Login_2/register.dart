@@ -72,10 +72,10 @@ class _RegisterState extends State<Register> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              const Color.fromRGBO(34, 87, 122, 1),
-              const Color.fromRGBO(76, 175, 80, 1)
-            ],
+                       colors: [
+  const Color(0xFF34A0A4),
+  const Color(0xFF184E77),
+],
           ),
         ),
         child: SingleChildScrollView(

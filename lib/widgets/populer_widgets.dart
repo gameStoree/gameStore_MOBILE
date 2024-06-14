@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/JOKI/Jasa_rank.dart';
 import 'package:project/topup_Screen/COC_screen.dart';
 import 'package:project/topup_Screen/Ghensin_Screen.dart';
 import 'package:project/topup_Screen/ML_Screen.dart';
@@ -24,7 +25,9 @@ class Populerw extends StatelessWidget {
             _navigateToCOC(context);
           }),
           SizedBox(height: 1),
-          _buildImage('images/PO_JOKI.png', () {}),
+          _buildImage('images/PO_JOKI.png', () {
+            _navigateToJoki(context);
+          }),
           SizedBox(height: 1),
           _buildImage('images/PO_genshin.png', () {
             _navigateToGenshin(context);
@@ -71,9 +74,9 @@ class Populerw extends StatelessWidget {
         context, MaterialPageRoute(builder: (context) => CocTopUp()));
   }
 
-  // void _navigateToJoki(BuildContext context) {
-  //   Navigator.push(context, MaterialPageRoute(builder: (context) => CocTopUp()));
-  // }
+  void _navigateToJoki(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => JasaRank()));
+  }
   void _navigateToGenshin(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => GenshinScreen()));

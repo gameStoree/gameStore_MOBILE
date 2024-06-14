@@ -118,7 +118,7 @@ class _OrderDiamondDetailState extends State<OrderDiamondDetail> {
                         ),
                       ),
                       SizedBox(height: 2.0),
-                      Text("Pembelian Produk: JOKI Rank Mobile Legend"),
+                      Text("Pembelian Produk: Diamond Mobile Legend"),
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
