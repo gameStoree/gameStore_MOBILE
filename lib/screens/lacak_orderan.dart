@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:project/Mvm/searchDiamond.dart';
 import 'package:project/Mvm/searchjokipemesanan.dart';
+import 'package:project/ipconfig.dart';
 import 'package:project/screens/order_Detail.dart';
 import 'package:project/screens/order_detail_diamond.dart';
 import 'package:project/widgets/home_buttom.dart';
@@ -34,7 +35,7 @@ class _SearchPageState extends State<SearchPage> {
   });
   EasyLoading.show(status: 'Pesanan anda Diproses');
 
-  final url = 'http://10.0.2.2:8000/api/search/$orderId';
+  final url = '${Ipconfig.baseUrl}/search/$orderId';
   final response = await http.get(Uri.parse(url));
 
   if (response.statusCode == 200) {

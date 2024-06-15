@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:project/Form%20Pemesanan/pemesananJoki.dart';
 import 'package:project/Ketentuan%20TopUp/ketentuan%20_joki.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
+import 'package:project/ipconfig.dart';
 // import 'package:project/widgets/joki.dart';
 import 'package:sp_util/sp_util.dart';
 
@@ -59,7 +60,7 @@ class _JasaRankState extends State<JasaRank> {
   Future<void> sendOrderData() async {
     EasyLoading.show(status: 'Pesanan anda Diproses');
     int? userId = await SpUtil.getInt('id_user');
-    final url = Uri.parse('http://10.0.2.2:8000/api/transactions');
+    final url = Uri.parse('${Ipconfig.baseUrl}/transactions');
     final Map<String, dynamic> orderData = {
       'id_paket': selectedPaketId.toString(),
       'login_via': valueChoose.toString(),
@@ -89,7 +90,7 @@ class _JasaRankState extends State<JasaRank> {
         final responseData = json.decode(response.body);
         print('Response data: $responseData');
         final Urllastorder =
-            Uri.parse('http://10.0.2.2:8000/api/pemesanan-jk-terbaru/$userId');
+            Uri.parse('${Ipconfig.baseUrl}/pemesanan-jk-terbaru/$userId');
         final latestOrderResponse = await http.get(Urllastorder);
         print(
             'Order Last Response status code: ${latestOrderResponse.statusCode}');
@@ -250,7 +251,7 @@ class _JasaRankState extends State<JasaRank> {
   //=========== Logic Api get data Diamond ============//
   Future<List<Datajoki>> fetchJokirank(String datajoki) async {
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/api/jokirank?data=$datajoki'));
+        .get(Uri.parse('${Ipconfig.baseUrl}/jokirank?data=$datajoki'));
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];
       return data.map((json) => Datajoki.fromJson(json)).toList();

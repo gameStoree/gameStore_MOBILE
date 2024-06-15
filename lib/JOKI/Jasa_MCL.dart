@@ -7,6 +7,8 @@ import 'package:project/Ketentuan%20TopUp/ketentuan%20_joki.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:project/Model_topUp/Joki_rank.dart';
 import 'package:http/http.dart' as http;
+import 'package:project/ipconfig.dart';
+
 
 class JasaMCL extends StatefulWidget {
   const JasaMCL({super.key});
@@ -36,7 +38,7 @@ class _JasaMCLState extends State<JasaMCL> {
 
   Future<List<Datajoki>> fetchJokirank(String datajoki) async {
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/api/jokirank?data=$datajoki'));
+        .get(Uri.parse('${Ipconfig.baseUrl}/jokirank?data=$datajoki'));
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];
       return data.map((json) => Datajoki.fromJson(json)).toList();

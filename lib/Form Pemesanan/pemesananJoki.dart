@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project/Form Pemesanan/snap_web_view_screen.dart';
+import 'package:project/ipconfig.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class OrderJokiPage extends StatefulWidget {
   final Map<String, dynamic> orderData;
@@ -8,6 +12,42 @@ class OrderJokiPage extends StatefulWidget {
 }
 
 class _OrderJokiPageState extends State<OrderJokiPage> {
+  final TextEditingController _url = TextEditingController();
+
+  Future<String> getSnapToken(
+      double amount,
+      String firstName,
+      String email,
+      String phone,
+      int id_paket,
+      // int harga_satuan,
+      int banyak_bintang,
+      // String nama_rank
+      ) async {
+    final response = await http.post(
+      Uri.parse(
+          '${Ipconfig.baseUrl}/transaksi_baru'), // Ganti dengan URL backend Anda
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'amount': amount,
+        'first_name': firstName,
+        'email': email,
+        'phone': phone,
+        'id': id_paket,
+        // 'harga_satuan': harga_satuan,
+        'banyak_bintang': banyak_bintang,
+        // 'nama_rank': nama_rank,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      return responseData['snap_token'];
+    } else {
+      throw Exception('Failed to get Snap Token');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final orderData = widget.orderData;
@@ -341,7 +381,33 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 22),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        final snapToken = await getSnapToken(
+                            double.parse(orderData['harga_keseluruhan'].toString()),
+                            orderData['Id_Server'].toString(),
+                            orderData['email_no_hp_montonID'].toString(),
+                            orderData['no_hp'].toString(),
+                            int.parse(orderData['id_paket'].toString()),
+                            // 10000,
+                            int.parse(orderData['jumlah_bintang'].toString()),
+                            // 'epic',
+                            );
+                        final url =
+                            'https://app.sandbox.midtrans.com/snap/v2/vtweb/$snapToken'; // URL untuk Midtrans SNAP
+
+                        print('Snap Token: $snapToken'); // Debugging print
+                        print('URL: $url'); // Debugging print
+
+                        Navigator.of(context).pushNamed(
+                          SnapWebViewScreen.routeName,
+                          arguments: {'url': url},
+                        );
+                      } catch (e) {
+                        // Tangani kesalahan jika gagal mendapatkan Snap Token
+                        print(e);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 50),
                       backgroundColor: Color(0xff22577A),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:project/ipconfig.dart';
 // import 'package:project/Login_2/register_provider.dart';
 
 class Register extends StatefulWidget {
@@ -42,7 +43,7 @@ class _RegisterState extends State<Register> {
       EasyLoading.show(status: 'Mendaftarkan Akun...');
 
       var response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/register'),
+        Uri.parse('${Ipconfig.baseUrl}/register'),
         body: data,
       );
       if (response.statusCode == 201) {

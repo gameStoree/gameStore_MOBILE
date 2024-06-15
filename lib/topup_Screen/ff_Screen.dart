@@ -4,6 +4,7 @@ import 'package:project/Ketentuan%20TopUp/Ketentuan_topup.dart';
 import 'package:project/Model_topUp/Diamond_model.dart';
 // import 'package:project/model/model_payment.dart';
 import 'package:flutter/services.dart';
+import 'package:project/ipconfig.dart';
 import 'package:project/widgets/home_buttom.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,7 +32,7 @@ class _FFScreenState extends State<FFScreen> {
 
   Future<List<Diamond>> fetchDiamonds(String gameName) async {
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/api/diamonds/Free Fire'));
+        .get(Uri.parse('${Ipconfig.baseUrl}/diamonds/Free Fire'));
 
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];

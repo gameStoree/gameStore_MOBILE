@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
+import 'package:project/ipconfig.dart';
 
 class LoginProvider extends GetConnect {
   Future<Response> PostUser(var data) {
     var myHeader = {
       'Accept': 'application/json',
     };
-    return post('http://10.0.2.2:8000/api/login', data, headers: myHeader);
+    return post('${Ipconfig.baseUrl}/login', data, headers: myHeader);
   }
 }

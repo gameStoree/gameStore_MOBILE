@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:get/get_core/src/get_main.dart';
 import 'package:project/Model_topUp/image_slider.dart';
 import 'package:project/Model_topUp/order_model.dart';
+import 'package:project/ipconfig.dart';
 import 'package:project/screens/profile.dart';
 import 'package:project/widgets/joki.dart';
 import 'package:project/widgets/populer_widgets.dart';
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen>
     EasyLoading.show(status: 'Logging out...');
     String? token = SpUtil.getString('token');
     if (token != null) {
-      Uri apiUrl = Uri.parse('http://10.0.2.2:8000/api/logout');
+      Uri apiUrl = Uri.parse('${Ipconfig.baseUrl}/logout');
       try {
         var response = await http.post(
           apiUrl,
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<List<Orderan>> fetchOrderIds(int userId) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/order-ids/$userId');
+    final url = Uri.parse('${Ipconfig.baseUrl}/order-ids/$userId');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List<dynamic> orderJson = json.decode(response.body)['orders'];

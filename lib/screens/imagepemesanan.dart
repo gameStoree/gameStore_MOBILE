@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:project/ipconfig.dart';
+
 class ImagePage extends StatefulWidget {
   final int pemesananId;
 
@@ -22,7 +24,7 @@ class _ImagePageState extends State<ImagePage> {
   }
 
   Future<void> fetchImages() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/'));
+    final response = await http.get(Uri.parse('${Ipconfig.baseUrl}'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

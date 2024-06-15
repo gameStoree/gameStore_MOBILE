@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:project/Form%20Pemesanan/pemesananDiamond.dart';
 import 'package:project/Ketentuan%20TopUp/Ketentuan_topup.dart';
 import 'package:project/Model_topUp/Diamond_model.dart';
+import 'package:project/ipconfig.dart';
 import 'package:project/widgets/home_buttom.dart';
 import 'package:http/http.dart' as http;
 import 'package:sp_util/sp_util.dart';
@@ -56,7 +57,7 @@ class _MLScreenState extends State<MlScreen> {
     }
     String combinedIdGame = '$idGameText $serverGameText';
     print("Nilai combinedIdGame: $combinedIdGame");
-    final url = Uri.parse('http://10.0.2.2:8000/api/pemesanan-diamond');
+    final url = Uri.parse('${Ipconfig.baseUrl}/pemesanan-diamond');
     final Map<String, dynamic> PesananOrder = {
       'id_server': combinedIdGame.toString(),
       'id_diamond': _selectedDiamond.toString(),
@@ -81,7 +82,7 @@ class _MLScreenState extends State<MlScreen> {
         final responseData = json.decode(response.body);
         print('Response data: $responseData');
         final latestOrderUrl =
-            Uri.parse('http://10.0.2.2:8000/api/pemesanan-dm-terbaru/$userId');
+            Uri.parse('${Ipconfig.baseUrl}/pemesanan-dm-terbaru/$userId');
         final latestOrderResponse = await http.get(latestOrderUrl);
         print(
             'Latest order response status code: ${latestOrderResponse.statusCode}');
@@ -243,7 +244,7 @@ class _MLScreenState extends State<MlScreen> {
 
   Future<List<Diamond>> fetchDiamonds(String gameName) async {
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/api/diamonds/$gameName'));
+        .get(Uri.parse('${Ipconfig.baseUrl}/diamonds/$gameName'));
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];
       return data.map((json) => Diamond.fromJson(json)).toList();

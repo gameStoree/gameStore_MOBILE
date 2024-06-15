@@ -38,6 +38,8 @@ dependencies:
   google_fonts: ^6.1.0
   email_validator: ^2.1.17
   get: ^4.6.6
+  webview_flutter: ^3.0.4
+  url_launcher: ^6.1.6
   #/////////////////////
   
   awesome_dialog: ^3.2.0

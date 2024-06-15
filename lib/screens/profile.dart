@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:project/Form%20Pemesanan/cekfoto.dart';
+import 'package:project/ipconfig.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/home_buttom.dart';
@@ -33,7 +34,7 @@ class _ProfileState extends State<Profile> {
     print('User ID: $userId');
 
     if (userId != null) {
-      final url = 'http://10.0.2.2:8000/api/users/$userId/getphoto';
+      final url = '${Ipconfig.baseUrl}/users/$userId/getphoto';
       print('Fetching photo from: $url');
 
       try {
@@ -70,7 +71,7 @@ class _ProfileState extends State<Profile> {
   Future<void> _uploadImage(File image) async {
     int userId = SpUtil.getInt('id_user') ?? 0;
     print('User ID: $userId');
-    final url = 'http://10.0.2.2:8000/api/users/$userId/photobn';
+    final url = '${Ipconfig.baseUrl}/users/$userId/photobn';
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.files
         .add(await http.MultipartFile.fromPath('foto-user', image.path));

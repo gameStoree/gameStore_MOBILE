@@ -1,7 +1,7 @@
 import 'dart:convert'; // Import library untuk mengakses json.decode
-
 import 'package:flutter/material.dart';
 import 'package:project/Mvm/Spultil.dart';
+import 'package:project/ipconfig.dart';
 import 'package:http/http.dart' as http;
 
 class DisplayUploadedPhoto extends StatefulWidget {
@@ -21,7 +21,8 @@ class _DisplayUploadedPhotoState extends State<DisplayUploadedPhoto> {
   Future<void> loadPhoto() async {
     int userId = await SpUtil.getInt('id_user') ?? 0;
     if (userId != 0) {
-      String apiUrl = 'http://10.0.2.2:8000/api/upload-photo/$userId';
+      // String apiUrl = 'http://10.0.2.2:8000/api/upload-photo/$userId';
+      String apiUrl = '${Ipconfig.baseUrl}/upload-photo/$userId';
       http.Response response = await http.get(Uri.parse(apiUrl));
       if (response.statusCode == 200) {
         // Ubah response.body menjadi objek JSON
