@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
 
         GetPage(
             name: SnapWebViewScreen.routeName,
-            page: () => const SnapWebViewScreen()),
+            page: () => const SnapWebViewScreen(orderData: {})),
       ],
       home: welcomescreen(),
       builder: EasyLoading.init(),

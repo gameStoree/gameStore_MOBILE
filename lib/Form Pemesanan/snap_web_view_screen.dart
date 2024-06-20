@@ -1,13 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:project/ipconfig.dart';
+import 'package:project/Form Pemesanan/pemesananJoki.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class SnapWebViewScreen extends StatefulWidget {
   static const routeName = '/snap-webview';
-  
 
-  const SnapWebViewScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic> orderData;
+
+  const SnapWebViewScreen({Key? key, required this.orderData})
+      : super(key: key);
 
   @override
   State<SnapWebViewScreen> createState() => _WebViewAppState();
@@ -18,8 +24,13 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    final routeArgs = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final url = routeArgs['url'];
+    final orderData = routeArgs['orderData'];
+
+    String getValueAsString(dynamic value) {
+      return value != null ? value.toString() : 'Tidak ada data';
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -48,16 +59,15 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
                   // Deteksi status transaksi dari URL
                   if (url.contains('transaction_status=')) {
                     final uri = Uri.parse(url);
-                    final transactionStatus = uri.queryParameters['transaction_status'];
+                    final transactionStatus =
+                        uri.queryParameters['transaction_status'];
 
                     // Tampilkan status transaksi di console
                     print('Transaction Status: $transactionStatus');
 
                     if (transactionStatus == 'settlement') {
-
-
                       // Kembali ke halaman awal jika transaksi sukses
-
+                      updateTransactionStatus(getValueAsString(orderData['id']));
                       Navigator.popUntil(context, ModalRoute.withName('/home'));
                     }
                   }
@@ -87,7 +97,8 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0A2852)),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0A2852)),
                 child: const Text('Exit', style: TextStyle(fontSize: 10)),
               ),
             ),
@@ -107,6 +118,27 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
       mode: LaunchMode.externalApplication,
     )) {
       throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> updateTransactionStatus(String transactionId) async {
+    final url = Uri.parse('${Ipconfig.baseUrl}/status');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'transaction_id': transactionId,
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        print('Transaction status updated successfully');
+      } else {
+        print(
+            'Failed to update transaction status. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
     }
   }
 }

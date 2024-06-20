@@ -401,7 +401,10 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
 
                         Navigator.of(context).pushNamed(
                           SnapWebViewScreen.routeName,
-                          arguments: {'url': url},
+                          arguments: {
+                            'url': url, 
+                            'orderData': orderData,  // Meneruskan orderData ke SnapWebViewScreen
+                            },
                         );
                       } catch (e) {
                         // Tangani kesalahan jika gagal mendapatkan Snap Token
