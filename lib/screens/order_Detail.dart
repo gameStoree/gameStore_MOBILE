@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:project/Mvm/searchjokipemesanan.dart';
 // import 'package:project/screens/imagepemesanan.dart';
 
@@ -324,22 +326,12 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                       SizedBox(height: 2.0),
                       Text("${widget.order.catatanPenjoki}"),
                       SizedBox(height: 16.0),
-                      Text(
-                        'Worker Id',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2.0),
-                      Text("${widget.order.idWorker ?? '---'}"),
-                      SizedBox(height: 16.0),
+
+                    
                       SizedBox(
                         width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
-                            // Aksi untuk download invoice
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12.0),
@@ -371,43 +363,85 @@ class _OrderDetailWidgetState extends State<OrderDetailWidget> {
                   ),
                 ),
                  SizedBox(height: 15),
-               Text(
-                'Screnshot hasil Joki',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 5),
-               Container(
-              height: 200,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: widget.images.map((image) {
-                     print('Loading image: $image');
-                    return Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CachedNetworkImage(
-                        imageUrl: image,
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                        width: 200,
-                        fit: BoxFit.cover,
+              Text(
+          'Screnshot hasil Joki',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 5),
+        Container(
+          height: 300,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical, // Arah scroll vertikal
+            child: Column( // Layout Column
+              children: widget.images.map((image) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FullScreenImageViewer(
+                          images: widget.images,
+                          initialIndex: widget.images.indexOf(image),
+                        ),
                       ),
                     );
-                  }).toList(),
-                ),
-              ),
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CachedNetworkImage(
+                      imageUrl: image,
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      width: 350,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
-            SizedBox(height: 25),
+          ),
+        ),
+          SizedBox(height: 25),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+class FullScreenImageViewer extends StatelessWidget {
+  final List<String> images;
+  final int initialIndex;
+
+  FullScreenImageViewer({required this.images, required this.initialIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Detail Gambar'),
+      ),
+      body: PhotoViewGallery.builder(
+        itemCount: images.length,
+        builder: (context, index) {
+          return PhotoViewGalleryPageOptions(
+            imageProvider: CachedNetworkImageProvider(images[index]),
+            minScale: PhotoViewComputedScale.contained * 0.8,
+            maxScale: PhotoViewComputedScale.covered * 2,
+          );
+        },
+        scrollPhysics: BouncingScrollPhysics(),
+        backgroundDecoration: BoxDecoration(
+          color: Colors.black,
+        ),
+        pageController: PageController(initialPage: initialIndex),
       ),
     );
   }

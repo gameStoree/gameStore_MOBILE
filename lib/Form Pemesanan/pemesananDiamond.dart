@@ -1,4 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:project/ipconfig.dart';
+import 'package:project/Form Pemesanan/snap_web_view_screen.dart';
+
 
 class OrderDiamondPage extends StatefulWidget {
   final Map<String, dynamic> orderData;
@@ -10,6 +16,37 @@ class OrderDiamondPage extends StatefulWidget {
 }
 
 class _OrderDiamondPageState extends State<OrderDiamondPage> {
+
+final TextEditingController _url = TextEditingController();
+
+  Future<String> getSnapToken(
+      double amount,
+      String firstName,
+      String phone,
+      int id_paket,
+      ) async {
+    final response = await http.post(
+      Uri.parse(
+          '${Ipconfig.baseUrl}/transaksi_diamond'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'amount': amount,
+        'first_name': firstName,
+        'phone': phone,
+        'id': id_paket,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      return responseData['snap_token'];
+    } else {
+      throw Exception('Failed to get Snap Token');
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final orderData = widget.orderData;
@@ -161,6 +198,30 @@ class _OrderDiamondPageState extends State<OrderDiamondPage> {
                       SizedBox(height: 10.0),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
+                       Text(
+                        'Nama Game',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                             color: Colors.black),
+                      ),
+                      SizedBox(height: 2.0),
+                      Text(" ${orderData['nama_game']}"),
+                      SizedBox(height: 10.0),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 10.0),
+                       Text(
+                        'Jumlah Diamond',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      SizedBox(height: 2.0),
+                      Text(" ${orderData['jumlah_diamond']}"),
+                      SizedBox(height: 10.0),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 10.0),
                       Text(
                         'Pesan',
                         style: TextStyle(
@@ -217,7 +278,34 @@ class _OrderDiamondPageState extends State<OrderDiamondPage> {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 22),
                   child: ElevatedButton(
-                    onPressed: () {},
+                  onPressed: () async{
+                        try {
+                        final snapToken = await getSnapToken(
+                            double.parse(orderData['harga_keseluruhan'].toString()),
+                            orderData['id_server'].toString(),
+                            orderData['no_hp'].toString(),
+                            int.parse(orderData['id_diamond'].toString()),
+                            // 'epic',
+                            );
+                        final url =
+                            'https://app.sandbox.midtrans.com/snap/v2/vtweb/$snapToken'; // URL untuk Midtrans SNAP
+
+                        print('Snap Token: $snapToken'); // Debugging print
+                        print('URL: $url'); // Debugging print
+
+                        Navigator.of(context).pushNamed(
+                          SnapWebViewScreen.routeName,
+                          arguments: {
+                            'url': url,
+                            'orderData': orderData,  // Meneruskan orderData ke SnapWebViewScreen
+                            },
+                        );
+                      } catch (e) {
+                        // Tangani kesalahan jika gagal mendapatkan Snap Token
+                        print(e);
+                      }
+
+                    },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 50),
                       backgroundColor: Color(0xff22577A),

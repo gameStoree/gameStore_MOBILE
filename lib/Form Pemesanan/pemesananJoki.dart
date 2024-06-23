@@ -26,7 +26,7 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
       ) async {
     final response = await http.post(
       Uri.parse(
-          '${Ipconfig.baseUrl}/transaksi_baru'), // Ganti dengan URL backend Anda
+          '${Ipconfig.baseUrl}/transaksi_baru'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'amount': amount,
@@ -194,6 +194,45 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       Divider(color: Colors.grey),
                       SizedBox(height: 10.0),
                       Text(
+                        'Nama Paket',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      SizedBox(height: 2.0),
+                      Text(
+                          "${getValueAsString(orderData['nama_paket'])}"),
+                      SizedBox(height: 10.0),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 10.0),
+                      Text(
+                        'Rank',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      SizedBox(height: 2.0),
+                      Text(
+                          "${getValueAsString(orderData['joki_rank'])}"),
+                      SizedBox(height: 10.0),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 10.0),
+                      Text(
+                        'Harga Perpaket',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      SizedBox(height: 2.0),
+                      Text(
+                          "${getValueAsString(orderData['harga_joki'])}"),
+                      SizedBox(height: 10.0),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 10.0),
+                      Text(
                         'Item Dibeli',
                         style: TextStyle(
                             fontSize: 18,
@@ -339,39 +378,6 @@ class _OrderJokiPageState extends State<OrderJokiPage> {
                       SizedBox(height: 2.0),
                       Text(getValueAsString(orderData['catatan_penjoki'])),
                       SizedBox(height: 16.0),
-                      // SizedBox(
-                      //   width: double.infinity,
-                      //   child: GestureDetector(
-                      //     onTap: () {
-                      //       // Navigator.push(
-                      //       //   context,
-                      //       //   MaterialPageRoute(builder: (context) => HomeScreen()),
-                      //       // );
-                      //     },
-                      //     child: Container(
-                      //       padding: EdgeInsets.symmetric(vertical: 12.0),
-                      //       decoration: BoxDecoration(
-                      //         color: Colors.blue,
-                      //         borderRadius: BorderRadius.circular(8.0),
-                      //       ),
-                      //       child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //       Icon(Icons.shopping_cart,
-                      //       color: Colors.yellow,),
-                      //       SizedBox(width: 7),
-                      //       Text(
-                      //         "Bayar Now",
-                      //         style: TextStyle(
-                      //      fontSize: 20,
-                      //     color: Colors.yellow,
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),

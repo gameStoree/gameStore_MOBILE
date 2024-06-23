@@ -55,19 +55,19 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
                   setState(() {
                     loadingPercentage = 100;
                   });
-
-                  // Deteksi status transaksi dari URL
                   if (url.contains('transaction_status=')) {
                     final uri = Uri.parse(url);
                     final transactionStatus =
-                        uri.queryParameters['transaction_status'];
-
-                    // Tampilkan status transaksi di console
+                    uri.queryParameters['transaction_status'];
                     print('Transaction Status: $transactionStatus');
-
                     if (transactionStatus == 'settlement') {
-                      // Kembali ke halaman awal jika transaksi sukses
-                      updateTransactionStatus(getValueAsString(orderData['id']));
+                      // updateTransactionStatus(getValueAsString(orderData['id']));
+                      final id = getValueAsString(orderData['id']);
+                      if (id.startsWith('INVD')) {
+                        updateStatusDiamond(id);
+                      } else if (id.startsWith('INVJ')) {
+                        updateStatusJoki(id);
+                      }
                       Navigator.popUntil(context, ModalRoute.withName('/home'));
                     }
                   }
@@ -121,7 +121,7 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
     }
   }
 
-  Future<void> updateTransactionStatus(String transactionId) async {
+  Future<void> updateStatusJoki(String transactionId) async {
     final url = Uri.parse('${Ipconfig.baseUrl}/status');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
@@ -141,4 +141,24 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
       print('Error occurred: $e');
     }
   }
+
+  Future<void> updateStatusDiamond(String id) async {
+    final url = Uri.parse('${Ipconfig.baseUrl}/status_diamond');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({'id': id});
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        print('Status updated successfully');
+      } else {
+        print('Failed to update status. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+
 }
