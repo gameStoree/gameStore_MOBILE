@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:project/ipconfig.dart';
-import 'package:project/Form Pemesanan/snap_web_view_screen.dart';
 
+import 'package:project/Form Pemesanan/snap_web_view_screen.dart';
+import 'package:project/ipconfig.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class OrderDiamondPage extends StatefulWidget {
   final Map<String, dynamic> orderData;
@@ -27,7 +28,7 @@ final TextEditingController _url = TextEditingController();
       ) async {
     final response = await http.post(
       Uri.parse(
-          '${Ipconfig.baseUrl}/transaksi_diamond'),
+      '${Ipconfig.baseUrl}/transaksi_diamond'), 
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'amount': amount,
@@ -278,7 +279,7 @@ final TextEditingController _url = TextEditingController();
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 22),
                   child: ElevatedButton(
-                  onPressed: () async{
+                    onPressed: () async{
                         try {
                         final snapToken = await getSnapToken(
                             double.parse(orderData['harga_keseluruhan'].toString()),
@@ -304,7 +305,6 @@ final TextEditingController _url = TextEditingController();
                         // Tangani kesalahan jika gagal mendapatkan Snap Token
                         print(e);
                       }
-
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 50),

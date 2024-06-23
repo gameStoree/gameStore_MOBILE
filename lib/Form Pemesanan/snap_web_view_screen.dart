@@ -61,7 +61,6 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
                     uri.queryParameters['transaction_status'];
                     print('Transaction Status: $transactionStatus');
                     if (transactionStatus == 'settlement') {
-                      // updateTransactionStatus(getValueAsString(orderData['id']));
                       final id = getValueAsString(orderData['id']);
                       if (id.startsWith('INVD')) {
                         updateStatusDiamond(id);
@@ -159,6 +158,4 @@ class _WebViewAppState extends State<SnapWebViewScreen> {
       print('Error occurred: $e');
     }
   }
-
-
 }
